@@ -4,8 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BITCOIN TERMINAL</title>
-
+<title>Bitcoin Live Dashboard</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
@@ -15,18 +14,19 @@
 
 body {
   margin: 0;
-  background: #0b0e11;
-  color: #eaecef;
+  background: #F1FAF6;
+  color: #174D40;
   font-family: Arial, sans-serif;
 }
 
 header {
-  height: 68px;
-  border-bottom: 1px solid #252a31;
+  height: 75px;
+  background: #FFFFFF;
+  border-bottom: 1px solid #E4F1EB;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 5%;
+  padding: 0 6%;
 }
 
 .brand {
@@ -34,6 +34,856 @@ header {
   align-items: center;
   gap: 12px;
   font-size: 19px;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.logo {
+  width: 40px;
+  height: 40px;
+  background: #BCEBDD;
+  color: #167A5D;
+  border-radius: 13px;
+  display: grid;
+  place-items: center;
+  font-size: 25px;
+}
+
+.header-right {
+  color: #86A99A;
+  font-size: 12px;
+}
+
+main {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 0 25px;
+}
+
+.welcome {
+  margin-bottom: 28px;
+}
+
+.welcome h2 {
+  font-size: 25px;
+  margin: 0 0 8px;
+}
+
+.welcome p {
+  color: #8AA99D;
+  font-size: 13px;
+  margin: 0;
+}
+
+.market-title {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 22px;
+}
+
+.market-icon {
+  width: 48px;
+  height: 48px;
+  background: #DDF5EA;
+  color: #178768;
+  border-radius: 15px;
+  display: grid;
+  place-items: center;
+  font-size: 28px;
+}
+
+.market-title h2 {
+  margin: 0 0 5px;
+  font-size: 20px;
+}
+
+.market-title p {
+  margin: 0;
+  font-size: 12px;
+  color: #8AA99D;
+}
+
+.connection {
+  margin-left: auto;
+  font-size: 11px;
+  padding: 9px 13px;
+  border-radius: 20px;
+  background: #EDF3EF;
+  color: #8A9D95;
+}
+
+.connection.connected {
+  color: #168866;
+  background: #DDF5EA;
+}
+
+.connection.disconnected {
+  color: #DC6870;
+  background: #FCE9E9;
+}
+
+.price-section {
+  background: #FFFFFF;
+  border: 1px solid #E4F1EB;
+  border-radius: 20px;
+  padding: 32px;
+  margin-bottom: 18px;
+  box-shadow: 0 5px 22px rgba(55,120,91,0.04);
+}
+
+.price-label {
+  font-size: 13px;
+  color: #8AA99D;
+}
+
+.price {
+  font-size: clamp(32px, 5vw, 45px);
+  font-weight: bold;
+  color: #174D40;
+  margin: 15px 0;
+  overflow-wrap: anywhere;
+}
+
+.change {
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.up {
+  color: #20A77D;
+}
+
+.down {
+  color: #E7797F;
+}
+
+.neutral {
+  color: #91A69D;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.stat {
+  background: #FFFFFF;
+  border: 1px solid #E4F1EB;
+  padding: 22px;
+  border-radius: 16px;
+  box-shadow: 0 4px 15px rgba(55,120,91,0.03);
+}
+
+.stat-label {
+  font-size: 12px;
+  color: #8AA99D;
+  margin-bottom: 13px;
+}
+
+.stat-value {
+  font-size: 17px;
+  font-weight: bold;
+  color: #285D4D;
+  overflow-wrap: anywhere;
+}
+
+.chart-container {
+  background: #FFFFFF;
+  border: 1px solid #E4F1EB;
+  border-radius: 20px;
+  padding: 26px;
+  box-shadow: 0 5px 22px rgba(55,120,91,0.04);
+}
+
+.chart-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.chart-header h3 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.chart-subtitle {
+  color: #94ACA1;
+  font-size: 11px;
+  margin-top: 6px;
+}
+
+.chart-buttons {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+}
+
+.chart-buttons button {
+  background: #F0F7F3;
+  color: #78968A;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 9px 14px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: 0.2s;
+}
+
+.chart-buttons button:hover {
+  background: #DDF5EA;
+  color: #168866;
+}
+
+.chart-buttons button.active {
+  background: #BCEBDD;
+  color: #176C56;
+  font-weight: bold;
+}
+
+.chart-box {
+  position: relative;
+  width: 100%;
+  height: 370px;
+}
+
+.chart-info {
+  display: flex;
+  justify-content: space-between;
+  color: #94ACA1;
+  font-size: 11px;
+  margin-top: 17px;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+footer {
+  text-align: center;
+  color: #9BB4A8;
+  font-size: 11px;
+  padding: 35px 10px;
+}
+
+@media(max-width: 750px) {
+  main {
+    margin-top: 25px;
+    padding: 0 15px;
+  }
+
+  .stats {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .stat {
+    padding: 17px;
+  }
+
+  .chart-box {
+    height: 290px;
+  }
+
+  .price-section {
+    padding: 23px;
+  }
+
+  .chart-container {
+    padding: 17px;
+  }
+
+  header {
+    padding: 0 18px;
+  }
+
+  .header-right {
+    font-size: 10px;
+  }
+
+  .welcome h2 {
+    font-size: 21px;
+  }
+}
+
+@media(max-width: 380px) {
+  .market-title h2 {
+    font-size: 17px;
+  }
+
+  .connection {
+    padding: 7px 9px;
+    font-size: 10px;
+  }
+
+  .chart-buttons button {
+    padding: 8px 10px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="brand">
+    <div class="logo">₿</div>
+    BITCOIN LIVE
+  </div>
+  <div class="header-right">UPBIT MARKET DATA</div>
+</header>
+
+<main>
+
+  <div class="welcome">
+    <h2>Market Dashboard 🌿</h2>
+    <p>실시간 비트코인 시장 정보를 확인하세요.</p>
+  </div>
+
+  <div class="market-title">
+    <div class="market-icon">₿</div>
+
+    <div>
+      <h2>Bitcoin / KRW</h2>
+      <p>비트코인 · 대한민국 원화 마켓</p>
+    </div>
+
+    <div class="connection" id="connection">
+      연결 중
+    </div>
+  </div>
+
+  <section class="price-section">
+    <div class="price-label">비트코인 현재가 (KRW)</div>
+
+    <div class="price" id="price">
+      데이터 수신 대기 중
+    </div>
+
+    <div class="change neutral" id="change">
+      실시간 시세 연결 중
+    </div>
+  </section>
+
+  <section class="stats">
+
+    <div class="stat">
+      <div class="stat-label">24시간 최고가</div>
+      <div class="stat-value" id="high">-</div>
+    </div>
+
+    <div class="stat">
+      <div class="stat-label">24시간 최저가</div>
+      <div class="stat-value" id="low">-</div>
+    </div>
+
+    <div class="stat">
+      <div class="stat-label">전일 종가</div>
+      <div class="stat-value" id="previous">-</div>
+    </div>
+
+    <div class="stat">
+      <div class="stat-label">24시간 거래대금</div>
+      <div class="stat-value" id="volume">-</div>
+    </div>
+
+  </section>
+
+  <section class="chart-container">
+
+    <div class="chart-header">
+      <div>
+        <h3>Bitcoin Price Chart</h3>
+        <div class="chart-subtitle">
+          BTC / KRW · 실시간 가격 변동
+        </div>
+      </div>
+
+      <div class="chart-buttons">
+        <button class="active" data-unit="1">1분</button>
+        <button data-unit="5">5분</button>
+        <button data-unit="15">15분</button>
+        <button data-unit="60">1시간</button>
+        <button data-unit="day">1일</button>
+      </div>
+    </div>
+
+    <div class="chart-box">
+      <canvas id="priceChart"></canvas>
+    </div>
+
+    <div class="chart-info">
+      <span id="chartStatus">차트 데이터 불러오는 중</span>
+      <span id="updated">마지막 업데이트: -</span>
+    </div>
+
+  </section>
+
+</main>
+
+<footer>
+  DATA PROVIDED BY UPBIT · PUBLIC MARKET DATA
+</footer>
+
+<script>
+const WS_URL =
+  "wss://api.upbit.com/websocket/v1";
+
+const API_BASE =
+  "https://api.upbit.com/v1";
+
+const formatWon = value =>
+  Math.round(value).toLocaleString("ko-KR") + "원";
+
+let socket = null;
+let reconnectTimer = null;
+let reconnectDelay = 1000;
+let currentUnit = "1";
+let currentPrice = null;
+let chartPoints = [];
+let reconnecting = false;
+let chartRequestId = 0;
+
+const canvas = document.getElementById("priceChart");
+const ctx = canvas.getContext("2d");
+
+const gradient = ctx.createLinearGradient(0, 0, 0, 370);
+
+gradient.addColorStop(0, "rgba(50,185,149,0.24)");
+gradient.addColorStop(1, "rgba(50,185,149,0)");
+
+const chart = new Chart(canvas, {
+  type: "line",
+
+  data: {
+    labels: [],
+    datasets: [{
+      label: "BTC/KRW",
+      data: [],
+      borderColor: "#32B995",
+      backgroundColor: gradient,
+      borderWidth: 2.5,
+      pointRadius: 0,
+      pointHoverRadius: 5,
+      pointHoverBackgroundColor: "#32B995",
+      fill: true,
+      tension: 0.25
+    }]
+  },
+
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    animation: false,
+
+    interaction: {
+      intersect: false,
+      mode: "index"
+    },
+
+    plugins: {
+      legend: {
+        display: false
+      },
+
+      tooltip: {
+        backgroundColor: "#FFFFFF",
+        titleColor: "#72958A",
+        bodyColor: "#174D40",
+        borderColor: "#DCEFE5",
+        borderWidth: 1,
+
+        callbacks: {
+          label: function(context) {
+            return " " + formatWon(context.parsed.y);
+          }
+        }
+      }
+    },
+
+    scales: {
+      x: {
+        grid: {
+          color: "#EDF4EF"
+        },
+
+        ticks: {
+          color: "#94ACA1",
+          maxTicksLimit: 7,
+          maxRotation: 0
+        },
+
+        border: {
+          display: false
+        }
+      },
+
+      y: {
+        position: "right",
+
+        grid: {
+          color: "#EDF4EF"
+        },
+
+        ticks: {
+          color: "#94ACA1",
+
+          callback: value =>
+            Number(value).toLocaleString("ko-KR")
+        },
+
+        border: {
+          display: false
+        }
+      }
+    }
+  }
+});
+
+function setConnection(state, message) {
+  const element = document.getElementById("connection");
+
+  element.textContent = message;
+  element.className = "connection " + state;
+}
+
+function updateMarket(data) {
+  currentPrice = data.trade_price;
+
+  document.getElementById("price").textContent =
+    formatWon(data.trade_price);
+
+  document.getElementById("high").textContent =
+    formatWon(data.high_price);
+
+  document.getElementById("low").textContent =
+    formatWon(data.low_price);
+
+  document.getElementById("previous").textContent =
+    formatWon(data.prev_closing_price);
+
+  document.getElementById("volume").textContent =
+    formatWon(data.acc_trade_price_24h);
+
+  const change = data.signed_change_price;
+  const rate = data.signed_change_rate * 100;
+
+  const element = document.getElementById("change");
+
+  element.className = "change";
+
+  let symbol = "";
+
+  if (change > 0) {
+    element.classList.add("up");
+    symbol = "▲ ";
+  } else if (change < 0) {
+    element.classList.add("down");
+    symbol = "▼ ";
+  } else {
+    element.classList.add("neutral");
+  }
+
+  element.textContent =
+    symbol +
+    formatWon(Math.abs(change)) +
+    " (" +
+    (rate > 0 ? "+" : "") +
+    rate.toFixed(2) +
+    "%) · 전일 대비";
+
+  document.getElementById("updated").textContent =
+    "마지막 업데이트: " +
+    new Date().toLocaleTimeString("ko-KR");
+
+  setConnection("connected", "● 실시간 연결");
+
+  updateLiveChart(data);
+}
+
+function updateLiveChart(data) {
+  const now = new Date();
+
+  const point = {
+    label: now.toLocaleTimeString("ko-KR", {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit"
+    }),
+
+    value: data.trade_price,
+    timestamp: now.getTime()
+  };
+
+  const interval = currentUnit === "day"
+    ? 86400000
+    : Number(currentUnit) * 60000;
+
+  const last = chartPoints[chartPoints.length - 1];
+
+  if (
+    last &&
+    Math.floor(last.timestamp / interval) ===
+    Math.floor(point.timestamp / interval)
+  ) {
+    chartPoints[chartPoints.length - 1] = point;
+  } else {
+    chartPoints.push(point);
+  }
+
+  if (chartPoints.length > 150) {
+    chartPoints.shift();
+  }
+
+  renderChart();
+}
+
+function renderChart() {
+  const dataset = chart.data.datasets[0];
+
+  dataset.data = chartPoints.map(p => p.value);
+  chart.data.labels = chartPoints.map(p => p.label);
+
+  const first = chartPoints[0];
+  const last = chartPoints[chartPoints.length - 1];
+
+  if (first && last) {
+    const rising = last.value >= first.value;
+
+    dataset.borderColor =
+      rising ? "#32B995" : "#E7797F";
+
+    dataset.pointHoverBackgroundColor =
+      rising ? "#32B995" : "#E7797F";
+
+    const fill = ctx.createLinearGradient(0, 0, 0, 370);
+
+    fill.addColorStop(
+      0,
+      rising
+        ? "rgba(50,185,149,0.24)"
+        : "rgba(231,121,127,0.20)"
+    );
+
+    fill.addColorStop(1, "rgba(255,255,255,0)");
+
+    dataset.backgroundColor = fill;
+  }
+
+  chart.update("none");
+}
+
+async function loadHistory() {
+  const status = document.getElementById("chartStatus");
+  const requestId = ++chartRequestId;
+
+  status.textContent = "과거 시세 데이터 불러오는 중...";
+
+  try {
+    let endpoint;
+
+    if (currentUnit === "day") {
+      endpoint =
+        `${API_BASE}/candles/days?market=KRW-BTC&count=100`;
+    } else {
+      endpoint =
+        `${API_BASE}/candles/minutes/${currentUnit}` +
+        `?market=KRW-BTC&count=100`;
+    }
+
+    const response = await fetch(endpoint, {
+      cache: "no-store"
+    });
+
+    if (!response.ok) {
+      throw new Error("HTTP " + response.status);
+    }
+
+    const candles = await response.json();
+
+    if (requestId !== chartRequestId) return;
+
+    if (!Array.isArray(candles) || candles.length === 0) {
+      throw new Error("차트 데이터가 없습니다.");
+    }
+
+    chartPoints = candles.reverse().map(candle => ({
+      label: new Date(
+        candle.timestamp
+      ).toLocaleTimeString("ko-KR", {
+        hour: "2-digit",
+        minute: "2-digit"
+      }),
+
+      value: candle.trade_price,
+      timestamp: candle.timestamp
+    }));
+
+    if (currentPrice !== null) {
+      const last = chartPoints[chartPoints.length - 1];
+
+      const interval = currentUnit === "day"
+        ? 86400000
+        : Number(currentUnit) * 60000;
+
+      const currentTime = Date.now();
+
+      if (
+        Math.floor(last.timestamp / interval) ===
+        Math.floor(currentTime / interval)
+      ) {
+        last.value = currentPrice;
+      } else {
+        chartPoints.push({
+          label: new Date(currentTime).toLocaleTimeString(
+            "ko-KR",
+            { hour: "2-digit", minute: "2-digit" }
+          ),
+          value: currentPrice,
+          timestamp: currentTime
+        });
+      }
+    }
+
+    renderChart();
+
+    status.textContent =
+      "과거 시세 " + candles.length +
+      "개 · 실시간 가격 반영";
+
+  } catch (error) {
+    if (requestId !== chartRequestId) return;
+
+    console.error("차트 조회 오류:", error);
+
+    status.textContent =
+      "차트 조회 실패: " + error.message;
+  }
+}
+
+document.querySelectorAll(
+  ".chart-buttons button"
+).forEach(button => {
+
+  button.addEventListener("click", function() {
+
+    document.querySelectorAll(
+      ".chart-buttons button"
+    ).forEach(b => b.classList.remove("active"));
+
+    this.classList.add("active");
+
+    currentUnit = this.dataset.unit;
+
+    loadHistory();
+  });
+});
+
+function connectUpbit() {
+  clearTimeout(reconnectTimer);
+
+  setConnection("", "연결 중");
+
+  socket = new WebSocket(WS_URL);
+
+  socket.onopen = function() {
+    reconnectDelay = 1000;
+    reconnecting = false;
+
+    socket.send(JSON.stringify([
+      {
+        ticket: "bitcoin-live-dashboard"
+      },
+
+      {
+        type: "ticker",
+        codes: ["KRW-BTC"]
+      },
+
+      {
+        format: "DEFAULT"
+      }
+    ]));
+
+    document.getElementById("chartStatus").textContent =
+      "실시간 시세 연결 완료";
+  };
+
+  socket.onmessage = async function(event) {
+    try {
+      let message;
+
+      if (event.data instanceof Blob) {
+        message = await event.data.text();
+      } else {
+        message = event.data;
+      }
+
+      const data = JSON.parse(message);
+
+      if (data.type === "ticker" &&
+          data.code === "KRW-BTC") {
+
+        updateMarket(data);
+      }
+
+    } catch (error) {
+      console.error("데이터 처리 오류:", error);
+    }
+  };
+
+  socket.onerror = function(error) {
+    console.error("WebSocket 오류:", error);
+  };
+
+  socket.onclose = function() {
+    setConnection("disconnected", "● 연결 끊김");
+
+    if (reconnecting) return;
+
+    reconnecting = true;
+
+    document.getElementById("chartStatus").textContent =
+      "연결 끊김 · 자동 재연결 시도 중";
+
+    reconnectTimer = setTimeout(function() {
+      reconnecting = false;
+
+      reconnectDelay = Math.min(
+        reconnectDelay * 2,
+        30000
+      );
+
+      connectUpbit();
+
+    }, reconnectDelay);
+  };
+}
+
+window.addEventListener("online", function() {
+  if (!socket || socket.readyState === WebSocket.CLOSED) {
+    reconnectDelay = 1000;
+    reconnecting = false;
+    connectUpbit();
+  }
+});
+
+window.addEventListener("beforeunload", function() {
+  clearTimeout(reconnectTimer);
+
+  if (socket) {
+    socket.close();
+  }
+});
+
+loadHistory();
+connectUpbit();
+</script>
+
+</body>
+</html>
   font-weight: bold;
   letter-spacing: 1px;
 }
