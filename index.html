@@ -4,8 +4,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bitcoin Live Dashboard</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<title>Bitcoin Trading Dashboard</title>
+
+<script src="https://unpkg.com/lightweight-charts@4.2.2/dist/lightweight-charts.standalone.production.js"></script>
 
 <style>
 * {
@@ -20,8 +21,8 @@ body {
 }
 
 header {
-  height: 75px;
-  background: #FFFFFF;
+  height: 70px;
+  background: white;
   border-bottom: 1px solid #E4F1EB;
   display: flex;
   align-items: center;
@@ -35,7 +36,6 @@ header {
   gap: 12px;
   font-size: 19px;
   font-weight: bold;
-  letter-spacing: 1px;
 }
 
 .logo {
@@ -55,18 +55,18 @@ header {
 }
 
 main {
-  max-width: 1200px;
-  margin: 40px auto;
-  padding: 0 25px;
+  max-width: 1250px;
+  margin: 35px auto;
+  padding: 0 20px;
 }
 
 .welcome {
-  margin-bottom: 28px;
+  margin-bottom: 25px;
 }
 
 .welcome h2 {
-  font-size: 25px;
   margin: 0 0 8px;
+  font-size: 25px;
 }
 
 .welcome p {
@@ -78,19 +78,19 @@ main {
 .market-title {
   display: flex;
   align-items: center;
-  gap: 14px;
-  margin-bottom: 22px;
+  gap: 13px;
+  margin-bottom: 20px;
 }
 
 .market-icon {
-  width: 48px;
-  height: 48px;
+  width: 47px;
+  height: 47px;
   background: #DDF5EA;
   color: #178768;
-  border-radius: 15px;
+  border-radius: 14px;
   display: grid;
   place-items: center;
-  font-size: 28px;
+  font-size: 27px;
 }
 
 .market-title h2 {
@@ -124,34 +124,32 @@ main {
 }
 
 .price-section {
-  background: #FFFFFF;
+  background: white;
   border: 1px solid #E4F1EB;
-  border-radius: 20px;
-  padding: 32px;
-  margin-bottom: 18px;
-  box-shadow: 0 5px 22px rgba(55,120,91,0.04);
+  border-radius: 18px;
+  padding: 26px;
+  margin-bottom: 16px;
 }
 
 .price-label {
-  font-size: 13px;
   color: #8AA99D;
+  font-size: 13px;
 }
 
 .price {
-  font-size: clamp(32px, 5vw, 45px);
+  font-size: clamp(30px, 5vw, 43px);
   font-weight: bold;
-  color: #174D40;
-  margin: 15px 0;
+  margin: 12px 0;
   overflow-wrap: anywhere;
 }
 
 .change {
-  font-size: 15px;
+  font-size: 14px;
   font-weight: bold;
 }
 
 .up {
-  color: #20A77D;
+  color: #168D6A;
 }
 
 .down {
@@ -165,101 +163,175 @@ main {
 .stats {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 14px;
-  margin-bottom: 20px;
+  gap: 13px;
+  margin-bottom: 18px;
 }
 
 .stat {
-  background: #FFFFFF;
+  background: white;
   border: 1px solid #E4F1EB;
-  padding: 22px;
-  border-radius: 16px;
-  box-shadow: 0 4px 15px rgba(55,120,91,0.03);
+  border-radius: 15px;
+  padding: 20px;
 }
 
 .stat-label {
   font-size: 12px;
   color: #8AA99D;
-  margin-bottom: 13px;
+  margin-bottom: 12px;
 }
 
 .stat-value {
   font-size: 17px;
   font-weight: bold;
-  color: #285D4D;
   overflow-wrap: anywhere;
 }
 
 .chart-container {
-  background: #FFFFFF;
+  background: white;
   border: 1px solid #E4F1EB;
-  border-radius: 20px;
-  padding: 26px;
+  border-radius: 18px;
+  padding: 23px;
   box-shadow: 0 5px 22px rgba(55,120,91,0.04);
 }
 
-.chart-header {
+.chart-heading {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 12px;
   flex-wrap: wrap;
-  gap: 15px;
-  margin-bottom: 25px;
+  margin-bottom: 18px;
 }
 
-.chart-header h3 {
-  margin: 0;
+.chart-heading h3 {
   font-size: 18px;
+  margin: 0 0 6px;
 }
 
 .chart-subtitle {
   color: #94ACA1;
   font-size: 11px;
-  margin-top: 6px;
 }
 
-.chart-buttons {
+.chart-toolbar {
   display: flex;
-  gap: 7px;
   flex-wrap: wrap;
+  gap: 7px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #EDF4EF;
 }
 
-.chart-buttons button {
-  background: #F0F7F3;
-  color: #78968A;
-  border: 1px solid transparent;
-  border-radius: 8px;
-  padding: 9px 14px;
+.chart-toolbar button {
+  border: 1px solid #E4F1EB;
+  background: #F5FAF7;
+  color: #66877A;
+  border-radius: 7px;
+  padding: 9px 12px;
   cursor: pointer;
   font-size: 12px;
-  transition: 0.2s;
 }
 
-.chart-buttons button:hover {
-  background: #DDF5EA;
-  color: #168866;
-}
-
-.chart-buttons button.active {
+.chart-toolbar button.active {
   background: #BCEBDD;
   color: #176C56;
+  border-color: #BCEBDD;
   font-weight: bold;
 }
 
-.chart-box {
-  position: relative;
-  width: 100%;
-  height: 370px;
+.chart-toolbar button:hover {
+  background: #DDF5EA;
 }
 
-.chart-info {
+.chart-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 13px;
+  padding: 15px 0;
+  font-size: 12px;
+  color: #78968A;
+}
+
+.chart-details span {
+  white-space: nowrap;
+}
+
+.chart-details b {
+  color: #285D4D;
+}
+
+.chart-details .positive {
+  color: #168D6A;
+}
+
+.chart-details .negative {
+  color: #E7797F;
+}
+
+.indicator-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 17px;
+  padding: 13px 0;
+  border-top: 1px solid #EDF4EF;
+  border-bottom: 1px solid #EDF4EF;
+}
+
+.indicator-title {
+  font-size: 12px;
+  color: #8AA99D;
+  font-weight: bold;
+}
+
+.indicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.indicator input {
+  accent-color: #32B995;
+  cursor: pointer;
+}
+
+.ma5 {
+  color: #E5A64C;
+}
+
+.ma20 {
+  color: #9B83D5;
+}
+
+.ma60 {
+  color: #45A9C5;
+}
+
+.volume-toggle {
+  color: #4B8D78;
+}
+
+.chart-area {
+  width: 100%;
+  height: 460px;
+  position: relative;
+}
+
+#chart {
+  width: 100%;
+  height: 100%;
+}
+
+.chart-footer {
   display: flex;
   justify-content: space-between;
-  color: #94ACA1;
-  font-size: 11px;
-  margin-top: 17px;
   gap: 10px;
   flex-wrap: wrap;
+  margin-top: 12px;
+  color: #94ACA1;
+  font-size: 11px;
 }
 
 footer {
@@ -271,8 +343,8 @@ footer {
 
 @media(max-width: 750px) {
   main {
-    margin-top: 25px;
-    padding: 0 15px;
+    margin-top: 22px;
+    padding: 0 13px;
   }
 
   .stats {
@@ -280,46 +352,27 @@ footer {
   }
 
   .stat {
-    padding: 17px;
-  }
-
-  .chart-box {
-    height: 290px;
-  }
-
-  .price-section {
-    padding: 23px;
+    padding: 16px;
   }
 
   .chart-container {
-    padding: 17px;
+    padding: 15px;
+  }
+
+  .chart-area {
+    height: 390px;
+  }
+
+  .price-section {
+    padding: 21px;
   }
 
   header {
-    padding: 0 18px;
+    padding: 0 17px;
   }
 
   .header-right {
     font-size: 10px;
-  }
-
-  .welcome h2 {
-    font-size: 21px;
-  }
-}
-
-@media(max-width: 380px) {
-  .market-title h2 {
-    font-size: 17px;
-  }
-
-  .connection {
-    padding: 7px 9px;
-    font-size: 10px;
-  }
-
-  .chart-buttons button {
-    padding: 8px 10px;
   }
 }
 </style>
@@ -357,11 +410,7 @@ footer {
 
   <section class="price-section">
     <div class="price-label">비트코인 현재가 (KRW)</div>
-
-    <div class="price" id="price">
-      데이터 수신 대기 중
-    </div>
-
+    <div class="price" id="price">조회 중...</div>
     <div class="change neutral" id="change">
       실시간 시세 연결 중
     </div>
@@ -386,36 +435,76 @@ footer {
 
     <div class="stat">
       <div class="stat-label">24시간 거래대금</div>
-      <div class="stat-value" id="volume">-</div>
+      <div class="stat-value" id="volume24">-</div>
     </div>
 
   </section>
 
   <section class="chart-container">
 
-    <div class="chart-header">
+    <div class="chart-heading">
       <div>
-        <h3>Bitcoin Price Chart</h3>
+        <h3>BTC/KRW 차트</h3>
         <div class="chart-subtitle">
-          BTC / KRW · 실시간 가격 변동
+          CANDLESTICK · MOVING AVERAGE · VOLUME
         </div>
       </div>
-
-      <div class="chart-buttons">
-        <button class="active" data-unit="1">1분</button>
-        <button data-unit="5">5분</button>
-        <button data-unit="15">15분</button>
-        <button data-unit="60">1시간</button>
-        <button data-unit="day">1일</button>
-      </div>
     </div>
 
-    <div class="chart-box">
-      <canvas id="priceChart"></canvas>
+    <div class="chart-toolbar">
+
+      <button data-unit="1">1분</button>
+      <button data-unit="5">5분</button>
+      <button data-unit="15">15분</button>
+      <button data-unit="30" class="active">30분</button>
+      <button data-unit="60">1시간</button>
+      <button data-unit="240">4시간</button>
+      <button data-unit="day">1일</button>
+
+      <button id="resetChart">초기화</button>
+
     </div>
 
-    <div class="chart-info">
-      <span id="chartStatus">차트 데이터 불러오는 중</span>
+    <div class="chart-details">
+      <span>시가: <b id="openValue">-</b></span>
+      <span>고가: <b id="highValue">-</b></span>
+      <span>저가: <b id="lowValue">-</b></span>
+      <span>종가: <b id="closeValue">-</b></span>
+      <span>거래량: <b id="candleVolume">-</b></span>
+    </div>
+
+    <div class="indicator-bar">
+
+      <span class="indicator-title">지표 설정</span>
+
+      <label class="indicator ma5">
+        <input type="checkbox" id="toggleMA5" checked>
+        MA 5
+      </label>
+
+      <label class="indicator ma20">
+        <input type="checkbox" id="toggleMA20" checked>
+        MA 20
+      </label>
+
+      <label class="indicator ma60">
+        <input type="checkbox" id="toggleMA60" checked>
+        MA 60
+      </label>
+
+      <label class="indicator volume-toggle">
+        <input type="checkbox" id="toggleVolume" checked>
+        거래량
+      </label>
+
+    </div>
+
+    <div class="chart-area">
+      <div id="chart"></div>
+    </div>
+
+    <div class="chart-footer">
+      <span id="chartStatus">차트 데이터 불러오는 중...</span>
       <span id="updated">마지막 업데이트: -</span>
     </div>
 
@@ -428,144 +517,371 @@ footer {
 </footer>
 
 <script>
-const WS_URL =
-  "wss://api.upbit.com/websocket/v1";
-
-const API_BASE =
-  "https://api.upbit.com/v1";
+const API_BASE = "https://api.upbit.com/v1";
+const WS_URL = "wss://api.upbit.com/websocket/v1";
 
 const formatWon = value =>
-  Math.round(value).toLocaleString("ko-KR") + "원";
+  Math.round(value).toLocaleString("ko-KR");
+
+const formatVolume = value =>
+  Number(value).toLocaleString("ko-KR", {
+    maximumFractionDigits: 4
+  });
 
 let socket = null;
 let reconnectTimer = null;
 let reconnectDelay = 1000;
-let currentUnit = "1";
-let currentPrice = null;
-let chartPoints = [];
 let reconnecting = false;
+
+let currentUnit = "30";
+let currentPrice = null;
+let candles = [];
 let chartRequestId = 0;
 
-const canvas = document.getElementById("priceChart");
-const ctx = canvas.getContext("2d");
+let currentCandle = null;
 
-const gradient = ctx.createLinearGradient(0, 0, 0, 370);
+const chartElement = document.getElementById("chart");
 
-gradient.addColorStop(0, "rgba(50,185,149,0.24)");
-gradient.addColorStop(1, "rgba(50,185,149,0)");
+const chart = LightweightCharts.createChart(chartElement, {
+  width: chartElement.clientWidth,
+  height: chartElement.clientHeight,
 
-const chart = new Chart(canvas, {
-  type: "line",
-
-  data: {
-    labels: [],
-    datasets: [{
-      label: "BTC/KRW",
-      data: [],
-      borderColor: "#32B995",
-      backgroundColor: gradient,
-      borderWidth: 2.5,
-      pointRadius: 0,
-      pointHoverRadius: 5,
-      pointHoverBackgroundColor: "#32B995",
-      fill: true,
-      tension: 0.25
-    }]
+  layout: {
+    background: {
+      color: "#FFFFFF"
+    },
+    textColor: "#78968A",
+    fontFamily: "Arial"
   },
 
-  options: {
-    responsive: true,
-    maintainAspectRatio: false,
-    animation: false,
-
-    interaction: {
-      intersect: false,
-      mode: "index"
+  grid: {
+    vertLines: {
+      color: "#EDF4EF"
     },
-
-    plugins: {
-      legend: {
-        display: false
-      },
-
-      tooltip: {
-        backgroundColor: "#FFFFFF",
-        titleColor: "#72958A",
-        bodyColor: "#174D40",
-        borderColor: "#DCEFE5",
-        borderWidth: 1,
-
-        callbacks: {
-          label: function(context) {
-            return " " + formatWon(context.parsed.y);
-          }
-        }
-      }
-    },
-
-    scales: {
-      x: {
-        grid: {
-          color: "#EDF4EF"
-        },
-
-        ticks: {
-          color: "#94ACA1",
-          maxTicksLimit: 7,
-          maxRotation: 0
-        },
-
-        border: {
-          display: false
-        }
-      },
-
-      y: {
-        position: "right",
-
-        grid: {
-          color: "#EDF4EF"
-        },
-
-        ticks: {
-          color: "#94ACA1",
-
-          callback: value =>
-            Number(value).toLocaleString("ko-KR")
-        },
-
-        border: {
-          display: false
-        }
-      }
+    horzLines: {
+      color: "#EDF4EF"
     }
+  },
+
+  crosshair: {
+    mode: LightweightCharts.CrosshairMode.Normal
+  },
+
+  rightPriceScale: {
+    borderColor: "#E4F1EB",
+    scaleMargins: {
+      top: 0.08,
+      bottom: 0.27
+    }
+  },
+
+  timeScale: {
+    borderColor: "#E4F1EB",
+    timeVisible: true,
+    secondsVisible: false
+  },
+
+  localization: {
+    priceFormatter: price =>
+      Math.round(price).toLocaleString("ko-KR")
+  },
+
+  handleScroll: {
+    mouseWheel: true,
+    pressedMouseMove: true,
+    horzTouchDrag: true,
+    vertTouchDrag: false
+  },
+
+  handleScale: {
+    axisPressedMouseMove: true,
+    mouseWheel: true,
+    pinch: true
   }
 });
 
-function setConnection(state, message) {
-  const element = document.getElementById("connection");
+const candleSeries = chart.addCandlestickSeries({
+  upColor: "#32B995",
+  downColor: "#E7797F",
+  borderUpColor: "#32B995",
+  borderDownColor: "#E7797F",
+  wickUpColor: "#32B995",
+  wickDownColor: "#E7797F",
+  priceLineVisible: true
+});
 
-  element.textContent = message;
-  element.className = "connection " + state;
+const ma5Series = chart.addLineSeries({
+  color: "#E5A64C",
+  lineWidth: 2,
+  priceLineVisible: false,
+  lastValueVisible: false
+});
+
+const ma20Series = chart.addLineSeries({
+  color: "#9B83D5",
+  lineWidth: 2,
+  priceLineVisible: false,
+  lastValueVisible: false
+});
+
+const ma60Series = chart.addLineSeries({
+  color: "#45A9C5",
+  lineWidth: 2,
+  priceLineVisible: false,
+  lastValueVisible: false
+});
+
+const volumeSeries = chart.addHistogramSeries({
+  priceFormat: {
+    type: "volume"
+  },
+
+  priceScaleId: "volume",
+
+  priceLineVisible: false,
+  lastValueVisible: false
+});
+
+chart.priceScale("volume").applyOptions({
+  scaleMargins: {
+    top: 0.79,
+    bottom: 0
+  },
+
+  borderVisible: false
+});
+
+function calculateMA(data, period) {
+  const result = [];
+  let sum = 0;
+
+  for (let i = 0; i < data.length; i++) {
+    sum += data[i].close;
+
+    if (i >= period) {
+      sum -= data[i - period].close;
+    }
+
+    if (i >= period - 1) {
+      result.push({
+        time: data[i].time,
+        value: sum / period
+      });
+    }
+  }
+
+  return result;
+}
+
+function makeVolumeData(data) {
+  return data.map(candle => ({
+    time: candle.time,
+    value: candle.volume || 0,
+
+    color: candle.close >= candle.open
+      ? "rgba(50,185,149,0.75)"
+      : "rgba(231,121,127,0.75)"
+  }));
+}
+
+function renderChart() {
+  if (candles.length === 0) return;
+
+  candleSeries.setData(candles);
+
+  ma5Series.setData(calculateMA(candles, 5));
+  ma20Series.setData(calculateMA(candles, 20));
+  ma60Series.setData(calculateMA(candles, 60));
+
+  volumeSeries.setData(makeVolumeData(candles));
+
+  updateIndicatorVisibility();
+}
+
+function updateIndicatorVisibility() {
+  ma5Series.applyOptions({
+    visible: document.getElementById("toggleMA5").checked
+  });
+
+  ma20Series.applyOptions({
+    visible: document.getElementById("toggleMA20").checked
+  });
+
+  ma60Series.applyOptions({
+    visible: document.getElementById("toggleMA60").checked
+  });
+
+  volumeSeries.applyOptions({
+    visible: document.getElementById("toggleVolume").checked
+  });
+}
+
+[
+  "toggleMA5",
+  "toggleMA20",
+  "toggleMA60",
+  "toggleVolume"
+].forEach(id => {
+  document.getElementById(id)
+    .addEventListener("change", updateIndicatorVisibility);
+});
+
+function getCandleInterval() {
+  if (currentUnit === "day") {
+    return 86400;
+  }
+
+  return Number(currentUnit) * 60;
+}
+
+function getCurrentCandleTime(timestamp) {
+  const interval = getCandleInterval();
+
+  if (currentUnit === "day") {
+    return Math.floor((timestamp + 32400) / interval)
+      * interval - 32400;
+  }
+
+  return Math.floor(timestamp / interval) * interval;
+}
+
+async function loadHistory() {
+  const status = document.getElementById("chartStatus");
+  const requestId = ++chartRequestId;
+
+  status.textContent = "캔들 및 거래량 데이터 불러오는 중...";
+
+  try {
+    let endpoint;
+
+    if (currentUnit === "day") {
+      endpoint =
+        `${API_BASE}/candles/days?market=KRW-BTC&count=200`;
+    } else {
+      endpoint =
+        `${API_BASE}/candles/minutes/${currentUnit}` +
+        `?market=KRW-BTC&count=200`;
+    }
+
+    const response = await fetch(endpoint, {
+      cache: "no-store"
+    });
+
+    if (!response.ok) {
+      throw new Error("HTTP " + response.status);
+    }
+
+    const data = await response.json();
+
+    if (requestId !== chartRequestId) return;
+
+    if (!Array.isArray(data) || data.length === 0) {
+      throw new Error("캔들 데이터가 없습니다.");
+    }
+
+    candles = data.reverse().map(item => ({
+      time: Math.floor(item.timestamp / 1000),
+      open: item.opening_price,
+      high: item.high_price,
+      low: item.low_price,
+      close: item.trade_price,
+      volume: item.candle_acc_trade_volume
+    }));
+
+    currentCandle = null;
+
+    if (currentPrice !== null) {
+      updateCurrentCandle(currentPrice, 0, false);
+    }
+
+    renderChart();
+
+    status.textContent =
+      "캔들 " + candles.length +
+      "개 · 이동평균선 · 거래량 표시 완료";
+
+  } catch (error) {
+    if (requestId !== chartRequestId) return;
+
+    console.error("차트 조회 오류:", error);
+
+    status.textContent =
+      "차트 조회 실패: " + error.message;
+  }
+}
+
+function updateCurrentCandle(price, tradeVolume = 0, redraw = true) {
+  if (candles.length === 0) return;
+
+  const now = Math.floor(Date.now() / 1000);
+  const time = getCurrentCandleTime(now);
+
+  let last = candles[candles.length - 1];
+
+  if (last.time === time) {
+    last.high = Math.max(last.high, price);
+    last.low = Math.min(last.low, price);
+    last.close = price;
+    last.volume += tradeVolume;
+
+  } else if (time > last.time) {
+    last = {
+      time: time,
+      open: price,
+      high: price,
+      low: price,
+      close: price,
+      volume: tradeVolume
+    };
+
+    candles.push(last);
+
+    if (candles.length > 200) {
+      candles.shift();
+    }
+  } else {
+    return;
+  }
+
+  currentCandle = last;
+
+  if (redraw) {
+    candleSeries.update(last);
+
+    volumeSeries.update({
+      time: last.time,
+      value: last.volume,
+
+      color: last.close >= last.open
+        ? "rgba(50,185,149,0.75)"
+        : "rgba(231,121,127,0.75)"
+    });
+
+    ma5Series.setData(calculateMA(candles, 5));
+    ma20Series.setData(calculateMA(candles, 20));
+    ma60Series.setData(calculateMA(candles, 60));
+
+    updateIndicatorVisibility();
+  }
 }
 
 function updateMarket(data) {
   currentPrice = data.trade_price;
 
   document.getElementById("price").textContent =
-    formatWon(data.trade_price);
+    formatWon(data.trade_price) + "원";
 
   document.getElementById("high").textContent =
-    formatWon(data.high_price);
+    formatWon(data.high_price) + "원";
 
   document.getElementById("low").textContent =
-    formatWon(data.low_price);
+    formatWon(data.low_price) + "원";
 
   document.getElementById("previous").textContent =
-    formatWon(data.prev_closing_price);
+    formatWon(data.prev_closing_price) + "원";
 
-  document.getElementById("volume").textContent =
-    formatWon(data.acc_trade_price_24h);
+  document.getElementById("volume24").textContent =
+    formatWon(data.acc_trade_price_24h) + "원";
 
   const change = data.signed_change_price;
   const rate = data.signed_change_rate * 100;
@@ -589,7 +905,7 @@ function updateMarket(data) {
   element.textContent =
     symbol +
     formatWon(Math.abs(change)) +
-    " (" +
+    "원 (" +
     (rate > 0 ? "+" : "") +
     rate.toFixed(2) +
     "%) · 전일 대비";
@@ -600,186 +916,25 @@ function updateMarket(data) {
 
   setConnection("connected", "● 실시간 연결");
 
-  updateLiveChart(data);
+  // 가격은 ticker로 갱신하되 거래량은 개별 체결 데이터로 누적
+  updateCurrentCandle(data.trade_price, 0);
 }
 
-function updateLiveChart(data) {
-  const now = new Date();
+function updateTrade(data) {
+  if (data.type !== "trade") return;
 
-  const point = {
-    label: now.toLocaleTimeString("ko-KR", {
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit"
-    }),
-
-    value: data.trade_price,
-    timestamp: now.getTime()
-  };
-
-  const interval = currentUnit === "day"
-    ? 86400000
-    : Number(currentUnit) * 60000;
-
-  const last = chartPoints[chartPoints.length - 1];
-
-  if (
-    last &&
-    Math.floor(last.timestamp / interval) ===
-    Math.floor(point.timestamp / interval)
-  ) {
-    chartPoints[chartPoints.length - 1] = point;
-  } else {
-    chartPoints.push(point);
-  }
-
-  if (chartPoints.length > 150) {
-    chartPoints.shift();
-  }
-
-  renderChart();
+  updateCurrentCandle(
+    data.trade_price,
+    data.trade_volume
+  );
 }
 
-function renderChart() {
-  const dataset = chart.data.datasets[0];
+function setConnection(state, message) {
+  const element = document.getElementById("connection");
 
-  dataset.data = chartPoints.map(p => p.value);
-  chart.data.labels = chartPoints.map(p => p.label);
-
-  const first = chartPoints[0];
-  const last = chartPoints[chartPoints.length - 1];
-
-  if (first && last) {
-    const rising = last.value >= first.value;
-
-    dataset.borderColor =
-      rising ? "#32B995" : "#E7797F";
-
-    dataset.pointHoverBackgroundColor =
-      rising ? "#32B995" : "#E7797F";
-
-    const fill = ctx.createLinearGradient(0, 0, 0, 370);
-
-    fill.addColorStop(
-      0,
-      rising
-        ? "rgba(50,185,149,0.24)"
-        : "rgba(231,121,127,0.20)"
-    );
-
-    fill.addColorStop(1, "rgba(255,255,255,0)");
-
-    dataset.backgroundColor = fill;
-  }
-
-  chart.update("none");
+  element.textContent = message;
+  element.className = "connection " + state;
 }
-
-async function loadHistory() {
-  const status = document.getElementById("chartStatus");
-  const requestId = ++chartRequestId;
-
-  status.textContent = "과거 시세 데이터 불러오는 중...";
-
-  try {
-    let endpoint;
-
-    if (currentUnit === "day") {
-      endpoint =
-        `${API_BASE}/candles/days?market=KRW-BTC&count=100`;
-    } else {
-      endpoint =
-        `${API_BASE}/candles/minutes/${currentUnit}` +
-        `?market=KRW-BTC&count=100`;
-    }
-
-    const response = await fetch(endpoint, {
-      cache: "no-store"
-    });
-
-    if (!response.ok) {
-      throw new Error("HTTP " + response.status);
-    }
-
-    const candles = await response.json();
-
-    if (requestId !== chartRequestId) return;
-
-    if (!Array.isArray(candles) || candles.length === 0) {
-      throw new Error("차트 데이터가 없습니다.");
-    }
-
-    chartPoints = candles.reverse().map(candle => ({
-      label: new Date(
-        candle.timestamp
-      ).toLocaleTimeString("ko-KR", {
-        hour: "2-digit",
-        minute: "2-digit"
-      }),
-
-      value: candle.trade_price,
-      timestamp: candle.timestamp
-    }));
-
-    if (currentPrice !== null) {
-      const last = chartPoints[chartPoints.length - 1];
-
-      const interval = currentUnit === "day"
-        ? 86400000
-        : Number(currentUnit) * 60000;
-
-      const currentTime = Date.now();
-
-      if (
-        Math.floor(last.timestamp / interval) ===
-        Math.floor(currentTime / interval)
-      ) {
-        last.value = currentPrice;
-      } else {
-        chartPoints.push({
-          label: new Date(currentTime).toLocaleTimeString(
-            "ko-KR",
-            { hour: "2-digit", minute: "2-digit" }
-          ),
-          value: currentPrice,
-          timestamp: currentTime
-        });
-      }
-    }
-
-    renderChart();
-
-    status.textContent =
-      "과거 시세 " + candles.length +
-      "개 · 실시간 가격 반영";
-
-  } catch (error) {
-    if (requestId !== chartRequestId) return;
-
-    console.error("차트 조회 오류:", error);
-
-    status.textContent =
-      "차트 조회 실패: " + error.message;
-  }
-}
-
-document.querySelectorAll(
-  ".chart-buttons button"
-).forEach(button => {
-
-  button.addEventListener("click", function() {
-
-    document.querySelectorAll(
-      ".chart-buttons button"
-    ).forEach(b => b.classList.remove("active"));
-
-    this.classList.add("active");
-
-    currentUnit = this.dataset.unit;
-
-    loadHistory();
-  });
-});
 
 function connectUpbit() {
   clearTimeout(reconnectTimer);
@@ -794,7 +949,7 @@ function connectUpbit() {
 
     socket.send(JSON.stringify([
       {
-        ticket: "bitcoin-live-dashboard"
+        ticket: "bitcoin-dashboard"
       },
 
       {
@@ -803,12 +958,14 @@ function connectUpbit() {
       },
 
       {
+        type: "trade",
+        codes: ["KRW-BTC"]
+      },
+
+      {
         format: "DEFAULT"
       }
     ]));
-
-    document.getElementById("chartStatus").textContent =
-      "실시간 시세 연결 완료";
   };
 
   socket.onmessage = async function(event) {
@@ -823,10 +980,14 @@ function connectUpbit() {
 
       const data = JSON.parse(message);
 
-      if (data.type === "ticker" &&
-          data.code === "KRW-BTC") {
+      if (data.code !== "KRW-BTC") return;
 
+      if (data.type === "ticker") {
         updateMarket(data);
+      }
+
+      if (data.type === "trade") {
+        updateTrade(data);
       }
 
     } catch (error) {
@@ -862,667 +1023,13 @@ function connectUpbit() {
   };
 }
 
-window.addEventListener("online", function() {
-  if (!socket || socket.readyState === WebSocket.CLOSED) {
-    reconnectDelay = 1000;
-    reconnecting = false;
-    connectUpbit();
-  }
-});
-
-window.addEventListener("beforeunload", function() {
-  clearTimeout(reconnectTimer);
-
-  if (socket) {
-    socket.close();
-  }
-});
-
-loadHistory();
-connectUpbit();
-</script>
-
-</body>
-</html>
-  font-weight: bold;
-  letter-spacing: 1px;
-}
-
-.logo {
-  width: 34px;
-  height: 34px;
-  background: #f7931a;
-  color: white;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  font-size: 23px;
-}
-
-.header-right {
-  color: #848e9c;
-  font-size: 12px;
-}
-
-main {
-  max-width: 1250px;
-  margin: 35px auto;
-  padding: 0 25px;
-}
-
-.market-title {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 25px;
-}
-
-.market-icon {
-  width: 43px;
-  height: 43px;
-  border-radius: 50%;
-  background: #f7931a;
-  display: grid;
-  place-items: center;
-  font-size: 27px;
-}
-
-.market-title h2 {
-  margin: 0 0 5px;
-  font-size: 20px;
-}
-
-.market-title p {
-  margin: 0;
-  color: #848e9c;
-  font-size: 12px;
-}
-
-.connection {
-  margin-left: auto;
-  font-size: 11px;
-  color: #848e9c;
-  background: #202630;
-  padding: 8px 12px;
-  border-radius: 20px;
-}
-
-.connection.connected {
-  color: #0ecb81;
-  background: #12372d;
-}
-
-.connection.disconnected {
-  color: #f6465d;
-  background: #3a2027;
-}
-
-.price-section {
-  background: #151a21;
-  border: 1px solid #252a31;
-  border-radius: 12px;
-  padding: 27px;
-  margin-bottom: 18px;
-}
-
-.price-label {
-  font-size: 13px;
-  color: #848e9c;
-}
-
-.price {
-  font-size: clamp(32px, 5vw, 43px);
-  font-weight: bold;
-  margin: 13px 0;
-  overflow-wrap: anywhere;
-}
-
-.change {
-  font-size: 15px;
-  font-weight: bold;
-}
-
-.up {
-  color: #0ecb81;
-}
-
-.down {
-  color: #f6465d;
-}
-
-.neutral {
-  color: #848e9c;
-}
-
-.stats {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
-  margin-bottom: 18px;
-}
-
-.stat {
-  background: #151a21;
-  border: 1px solid #252a31;
-  padding: 20px;
-  border-radius: 10px;
-}
-
-.stat-label {
-  font-size: 12px;
-  color: #848e9c;
-  margin-bottom: 12px;
-}
-
-.stat-value {
-  font-size: 17px;
-  font-weight: bold;
-  overflow-wrap: anywhere;
-}
-
-.chart-container {
-  background: #151a21;
-  border: 1px solid #252a31;
-  border-radius: 12px;
-  padding: 23px;
-}
-
-.chart-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 15px;
-  margin-bottom: 22px;
-}
-
-.chart-header h3 {
-  margin: 0;
-  font-size: 17px;
-}
-
-.chart-buttons {
-  display: flex;
-  gap: 7px;
-  flex-wrap: wrap;
-}
-
-.chart-buttons button {
-  background: #252a31;
-  color: #848e9c;
-  border: none;
-  border-radius: 5px;
-  padding: 9px 13px;
-  cursor: pointer;
-  font-size: 12px;
-}
-
-.chart-buttons button.active {
-  background: #f7931a;
-  color: #111;
-  font-weight: bold;
-}
-
-.chart-box {
-  position: relative;
-  width: 100%;
-  height: 360px;
-}
-
-.chart-info {
-  display: flex;
-  justify-content: space-between;
-  color: #848e9c;
-  font-size: 11px;
-  margin-top: 15px;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-footer {
-  text-align: center;
-  color: #59616e;
-  font-size: 11px;
-  padding: 30px 10px;
-}
-
-@media(max-width: 750px) {
-  main {
-    margin-top: 22px;
-    padding: 0 14px;
-  }
-
-  .stats {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .stat {
-    padding: 15px;
-  }
-
-  .chart-box {
-    height: 280px;
-  }
-
-  .price-section {
-    padding: 20px;
-  }
-
-  .chart-container {
-    padding: 15px;
-  }
-
-  header {
-    padding: 0 18px;
-  }
-}
-</style>
-</head>
-
-<body>
-
-<header>
-  <div class="brand">
-    <div class="logo">₿</div>
-    BITCOIN TERMINAL
-  </div>
-
-  <div class="header-right">UPBIT MARKET DATA</div>
-</header>
-
-<main>
-
-  <div class="market-title">
-    <div class="market-icon">₿</div>
-
-    <div>
-      <h2>Bitcoin / KRW</h2>
-      <p>비트코인 · 대한민국 원화 마켓</p>
-    </div>
-
-    <div class="connection" id="connection">
-      연결 중
-    </div>
-  </div>
-
-  <section class="price-section">
-    <div class="price-label">현재 비트코인 가격 (KRW)</div>
-
-    <div class="price" id="price">
-      데이터 수신 대기 중
-    </div>
-
-    <div class="change neutral" id="change">
-      실시간 시세 연결 중
-    </div>
-  </section>
-
-  <section class="stats">
-
-    <div class="stat">
-      <div class="stat-label">24시간 고가</div>
-      <div class="stat-value" id="high">-</div>
-    </div>
-
-    <div class="stat">
-      <div class="stat-label">24시간 저가</div>
-      <div class="stat-value" id="low">-</div>
-    </div>
-
-    <div class="stat">
-      <div class="stat-label">전일 종가</div>
-      <div class="stat-value" id="previous">-</div>
-    </div>
-
-    <div class="stat">
-      <div class="stat-label">24시간 거래대금</div>
-      <div class="stat-value" id="volume">-</div>
-    </div>
-
-  </section>
-
-  <section class="chart-container">
-
-    <div class="chart-header">
-      <h3>BTC/KRW 가격 차트</h3>
-
-      <div class="chart-buttons">
-        <button class="active" data-unit="1">1분</button>
-        <button data-unit="5">5분</button>
-        <button data-unit="15">15분</button>
-        <button data-unit="60">1시간</button>
-        <button data-unit="day">1일</button>
-      </div>
-    </div>
-
-    <div class="chart-box">
-      <canvas id="priceChart"></canvas>
-    </div>
-
-    <div class="chart-info">
-      <span id="chartStatus">차트 데이터 불러오는 중</span>
-      <span id="updated">마지막 업데이트: -</span>
-    </div>
-
-  </section>
-
-</main>
-
-<footer>
-  DATA PROVIDED BY UPBIT · PUBLIC MARKET DATA
-</footer>
-
-<script>
-const WS_URL = "wss://api.upbit.com/websocket/v1";
-
-const API_BASE = "https://api.upbit.com/v1";
-
-const formatWon = value =>
-  Math.round(value).toLocaleString("ko-KR") + "원";
-
-let socket = null;
-let reconnectTimer = null;
-let reconnectDelay = 1000;
-let currentUnit = "1";
-let currentPrice = null;
-let chart = null;
-let chartPoints = [];
-let latestCandleTime = null;
-let reconnecting = false;
-
-const buttons = document.querySelectorAll(
-  ".chart-buttons button"
-);
-
-const canvas = document.getElementById("priceChart");
-
-const chartContext = canvas.getContext("2d");
-
-const gradient = chartContext.createLinearGradient(
-  0, 0, 0, 360
-);
-
-gradient.addColorStop(0, "rgba(14,203,129,0.25)");
-gradient.addColorStop(1, "rgba(14,203,129,0)");
-
-chart = new Chart(canvas, {
-  type: "line",
-
-  data: {
-    labels: [],
-    datasets: [{
-      label: "BTC/KRW",
-      data: [],
-      borderColor: "#0ecb81",
-      backgroundColor: gradient,
-      borderWidth: 2,
-      pointRadius: 0,
-      pointHoverRadius: 5,
-      pointHoverBackgroundColor: "#0ecb81",
-      fill: true,
-      tension: 0.2
-    }]
-  },
-
-  options: {
-    responsive: true,
-    maintainAspectRatio: false,
-    animation: false,
-    interaction: {
-      intersect: false,
-      mode: "index"
-    },
-
-    plugins: {
-      legend: {
-        display: false
-      },
-
-      tooltip: {
-        backgroundColor: "#252a31",
-        titleColor: "#848e9c",
-        bodyColor: "#ffffff",
-        callbacks: {
-          label: function(context) {
-            return " " + formatWon(context.parsed.y);
-          }
-        }
-      }
-    },
-
-    scales: {
-      x: {
-        grid: {
-          color: "#252a31"
-        },
-        ticks: {
-          color: "#848e9c",
-          maxTicksLimit: 7,
-          maxRotation: 0
-        },
-        border: {
-          display: false
-        }
-      },
-
-      y: {
-        position: "right",
-        grid: {
-          color: "#252a31"
-        },
-        ticks: {
-          color: "#848e9c",
-          callback: value =>
-            Number(value).toLocaleString("ko-KR")
-        },
-        border: {
-          display: false
-        }
-      }
-    }
-  }
-});
-
-function setConnection(state, message) {
-  const element = document.getElementById("connection");
-
-  element.textContent = message;
-  element.className = "connection " + state;
-}
-
-function updateMarket(data) {
-  currentPrice = data.trade_price;
-
-  document.getElementById("price").textContent =
-    formatWon(data.trade_price);
-
-  document.getElementById("high").textContent =
-    formatWon(data.high_price);
-
-  document.getElementById("low").textContent =
-    formatWon(data.low_price);
-
-  document.getElementById("previous").textContent =
-    formatWon(data.prev_closing_price);
-
-  document.getElementById("volume").textContent =
-    formatWon(data.acc_trade_price_24h);
-
-  const change = data.signed_change_price;
-  const rate = data.signed_change_rate * 100;
-
-  const element = document.getElementById("change");
-
-  element.className = "change";
-
-  let symbol = "";
-
-  if (change > 0) {
-    element.classList.add("up");
-    symbol = "▲ ";
-  } else if (change < 0) {
-    element.classList.add("down");
-    symbol = "▼ ";
-  } else {
-    element.classList.add("neutral");
-  }
-
-  element.textContent =
-    symbol +
-    formatWon(Math.abs(change)) +
-    " (" +
-    (rate > 0 ? "+" : "") +
-    rate.toFixed(2) +
-    "%) · 전일 대비";
-
-  document.getElementById("updated").textContent =
-    "마지막 업데이트: " +
-    new Date().toLocaleTimeString("ko-KR");
-
-  setConnection("connected", "● 실시간 연결");
-
-  updateLiveChart(data);
-}
-
-function updateLiveChart(data) {
-  const now = new Date();
-  const price = data.trade_price;
-
-  const point = {
-    label: now.toLocaleTimeString("ko-KR", {
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit"
-    }),
-    value: price,
-    timestamp: now.getTime()
-  };
-
-  const interval = currentUnit === "day"
-    ? 86400000
-    : Number(currentUnit) * 60000;
-
-  const last = chartPoints[chartPoints.length - 1];
-
-  if (
-    last &&
-    Math.floor(last.timestamp / interval) ===
-    Math.floor(point.timestamp / interval)
-  ) {
-    chartPoints[chartPoints.length - 1] = point;
-  } else {
-    chartPoints.push(point);
-  }
-
-  if (chartPoints.length > 150) {
-    chartPoints.shift();
-  }
-
-  renderChart();
-}
-
-function renderChart() {
-  const dataset = chart.data.datasets[0];
-
-  dataset.data = chartPoints.map(p => p.value);
-  chart.data.labels = chartPoints.map(p => p.label);
-
-  const first = chartPoints[0];
-  const last = chartPoints[chartPoints.length - 1];
-
-  if (first && last) {
-    const rising = last.value >= first.value;
-
-    dataset.borderColor = rising ? "#0ecb81" : "#f6465d";
-    dataset.pointHoverBackgroundColor =
-      rising ? "#0ecb81" : "#f6465d";
-
-    const fill = chartContext.createLinearGradient(
-      0, 0, 0, 360
-    );
-
-    fill.addColorStop(
-      0,
-      rising
-        ? "rgba(14,203,129,0.25)"
-        : "rgba(246,70,93,0.25)"
-    );
-
-    fill.addColorStop(1, "rgba(0,0,0,0)");
-
-    dataset.backgroundColor = fill;
-  }
-
-  chart.update("none");
-}
-
-async function loadHistory() {
-  const status = document.getElementById("chartStatus");
-
-  status.textContent = "과거 시세 데이터 불러오는 중...";
-
-  try {
-    let endpoint;
-
-    if (currentUnit === "day") {
-      endpoint = `${API_BASE}/candles/days?market=KRW-BTC&count=100`;
-    } else {
-      endpoint =
-        `${API_BASE}/candles/minutes/${currentUnit}` +
-        `?market=KRW-BTC&count=100`;
-    }
-
-    const response = await fetch(endpoint, {
-      cache: "no-store"
-    });
-
-    if (!response.ok) {
-      throw new Error("HTTP " + response.status);
-    }
-
-    const candles = await response.json();
-
-    if (!Array.isArray(candles) || candles.length === 0) {
-      throw new Error("차트 데이터가 없습니다.");
-    }
-
-    chartPoints = candles.reverse().map(candle => ({
-      label: new Date(
-        candle.timestamp
-      ).toLocaleTimeString("ko-KR", {
-        hour: "2-digit",
-        minute: "2-digit"
-      }),
-      value: candle.trade_price,
-      timestamp: candle.timestamp
-    }));
-
-    latestCandleTime =
-      chartPoints[chartPoints.length - 1].timestamp;
-
-    if (currentPrice !== null) {
-      const last = chartPoints[chartPoints.length - 1];
-
-      last.value = currentPrice;
-    }
-
-    renderChart();
-
-    status.textContent =
-      "과거 시세 " + candles.length +
-      "개 · 실시간 가격 반영";
-
-  } catch (error) {
-    console.error("차트 조회 오류:", error);
-
-    status.textContent =
-      "차트 조회 실패: " + error.message;
-  }
-}
-
-buttons.forEach(button => {
+document.querySelectorAll(
+  ".chart-toolbar button[data-unit]"
+).forEach(button => {
   button.addEventListener("click", function() {
-    buttons.forEach(b => b.classList.remove("active"));
+    document.querySelectorAll(
+      ".chart-toolbar button[data-unit]"
+    ).forEach(item => item.classList.remove("active"));
 
     this.classList.add("active");
 
@@ -1532,84 +1039,53 @@ buttons.forEach(button => {
   });
 });
 
-function connectUpbit() {
-  clearTimeout(reconnectTimer);
+document.getElementById("resetChart")
+  .addEventListener("click", function() {
+    chart.timeScale().fitContent();
+  });
 
-  setConnection("", "연결 중");
+chart.subscribeCrosshairMove(function(param) {
+  if (!param || !param.time) return;
 
-  socket = new WebSocket(WS_URL);
+  const candle = param.seriesData.get(candleSeries);
+  const volume = param.seriesData.get(volumeSeries);
 
-  socket.onopen = function() {
-    reconnectDelay = 1000;
-    reconnecting = false;
+  if (!candle) return;
 
-    socket.send(JSON.stringify([
-      {
-        ticket: "bitcoin-terminal"
-      },
-      {
-        type: "ticker",
-        codes: ["KRW-BTC"]
-      },
-      {
-        format: "DEFAULT"
-      }
-    ]));
+  document.getElementById("openValue").textContent =
+    formatWon(candle.open);
 
-    document.getElementById("chartStatus").textContent =
-      "실시간 시세 연결 완료";
-  };
+  document.getElementById("highValue").textContent =
+    formatWon(candle.high);
 
-  socket.onmessage = async function(event) {
-    try {
-      let message;
+  document.getElementById("lowValue").textContent =
+    formatWon(candle.low);
 
-      if (event.data instanceof Blob) {
-        message = await event.data.text();
-      } else {
-        message = event.data;
-      }
+  const closeElement = document.getElementById("closeValue");
 
-      const data = JSON.parse(message);
+  closeElement.textContent = formatWon(candle.close);
 
-      if (data.type === "ticker" && data.code === "KRW-BTC") {
-        updateMarket(data);
-      }
+  closeElement.className =
+    candle.close >= candle.open ? "positive" : "negative";
 
-    } catch (error) {
-      console.error("데이터 처리 오류:", error);
-    }
-  };
+  document.getElementById("candleVolume").textContent =
+    volume ? formatVolume(volume.value) + " BTC" : "-";
+});
 
-  socket.onerror = function(error) {
-    console.error("WebSocket 오류:", error);
-  };
-
-  socket.onclose = function() {
-    setConnection("disconnected", "● 연결 끊김");
-
-    if (!reconnecting) {
-      reconnecting = true;
-
-      document.getElementById("chartStatus").textContent =
-        "연결 끊김 · 자동 재연결 시도 중";
-
-      reconnectTimer = setTimeout(() => {
-        reconnecting = false;
-        reconnectDelay = Math.min(
-          reconnectDelay * 2,
-          30000
-        );
-
-        connectUpbit();
-      }, reconnectDelay);
-    }
-  };
+function resizeChart() {
+  chart.applyOptions({
+    width: chartElement.clientWidth,
+    height: chartElement.clientHeight
+  });
 }
+
+const resizeObserver = new ResizeObserver(resizeChart);
+resizeObserver.observe(chartElement);
 
 window.addEventListener("online", function() {
   if (!socket || socket.readyState === WebSocket.CLOSED) {
     reconnectDelay = 1000;
+    reconnecting = false;
     connectUpbit();
   }
 });
