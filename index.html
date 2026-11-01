@@ -55,7 +55,7 @@ header {
 }
 
 main {
-  max-width: 1200px;
+  max-width: 1250px;
   margin: 35px auto;
   padding: 0 20px;
 }
@@ -282,21 +282,10 @@ main {
   accent-color: #32B995;
 }
 
-.ma5 {
-  color: #E5A64C;
-}
-
-.ma20 {
-  color: #9B83D5;
-}
-
-.ma60 {
-  color: #45A9C5;
-}
-
-.volume-toggle {
-  color: #4B8D78;
-}
+.ma5 { color: #E5A64C; }
+.ma20 { color: #9B83D5; }
+.ma60 { color: #45A9C5; }
+.volume-toggle { color: #4B8D78; }
 
 .chart-label {
   color: #8AA99D;
@@ -388,47 +377,36 @@ footer {
 
   <div class="market-title">
     <div class="market-icon">₿</div>
-
     <div>
       <h2>Bitcoin / KRW</h2>
       <p>비트코인 · 대한민국 원화 마켓</p>
     </div>
-
-    <div class="connection" id="connection">
-      연결 중
-    </div>
+    <div class="connection" id="connection">연결 중</div>
   </div>
 
   <section class="price-section">
     <div class="price-label">비트코인 현재가 (KRW)</div>
     <div class="price" id="price">조회 중...</div>
-    <div class="change neutral" id="change">
-      실시간 시세 연결 중
-    </div>
+    <div class="change neutral" id="change">실시간 시세 연결 중</div>
   </section>
 
   <section class="stats">
-
     <div class="stat">
       <div class="stat-label">24시간 최고가</div>
       <div class="stat-value" id="high">-</div>
     </div>
-
     <div class="stat">
       <div class="stat-label">24시간 최저가</div>
       <div class="stat-value" id="low">-</div>
     </div>
-
     <div class="stat">
       <div class="stat-label">전일 종가</div>
       <div class="stat-value" id="previous">-</div>
     </div>
-
     <div class="stat">
       <div class="stat-label">24시간 거래대금</div>
       <div class="stat-value" id="volume24">-</div>
     </div>
-
   </section>
 
   <section class="chart-container">
@@ -446,10 +424,11 @@ footer {
       <button data-unit="1">1분</button>
       <button data-unit="5">5분</button>
       <button data-unit="15">15분</button>
-      <button data-unit="30" class="active">30분</button>
       <button data-unit="60">1시간</button>
       <button data-unit="240">4시간</button>
-      <button data-unit="day">1일</button>
+      <button data-unit="day" class="active">1일</button>
+      <button data-unit="week">1주</button>
+      <button data-unit="month">1개월</button>
       <button id="resetChart">초기화</button>
     </div>
 
@@ -461,29 +440,23 @@ footer {
     </div>
 
     <div class="indicator-bar">
-
       <span class="indicator-title">이동평균선</span>
 
       <label class="indicator ma5">
-        <input type="checkbox" id="toggleMA5" checked>
-        MA 5
+        <input type="checkbox" id="toggleMA5" checked> MA 5
       </label>
 
       <label class="indicator ma20">
-        <input type="checkbox" id="toggleMA20" checked>
-        MA 20
+        <input type="checkbox" id="toggleMA20" checked> MA 20
       </label>
 
       <label class="indicator ma60">
-        <input type="checkbox" id="toggleMA60" checked>
-        MA 60
+        <input type="checkbox" id="toggleMA60" checked> MA 60
       </label>
 
       <label class="indicator volume-toggle">
-        <input type="checkbox" id="toggleVolume" checked>
-        거래량
+        <input type="checkbox" id="toggleVolume" checked> 거래량
       </label>
-
     </div>
 
     <div class="chart-label">PRICE · 캔들차트</div>
@@ -509,6 +482,8 @@ footer {
 const API_BASE = "https://api.upbit.com/v1";
 const WS_URL = "wss://api.upbit.com/websocket/v1";
 
+const $ = id => document.getElementById(id);
+
 const formatWon = value =>
   Math.round(value).toLocaleString("ko-KR");
 
@@ -522,53 +497,52 @@ let reconnectTimer = null;
 let reconnectDelay = 1000;
 let reconnecting = false;
 
-let currentUnit = "30";
+let currentUnit = "day";
 let currentPrice = null;
 let candles = [];
 let chartRequestId = 0;
 
-let lastTradeTime = 0;
-
-const priceElement = document.getElementById("priceChart");
-const volumeElement = document.getElementById("volumeChart");
+const priceElement = $("priceChart");
+const volumeElement = $("volumeChart");
 
 if (typeof LightweightCharts === "undefined") {
-  document.getElementById("chartStatus").textContent =
-    "차트 라이브러리를 불러오지 못했습니다. 인터넷 연결을 확인해 주세요.";
+  $("chartStatus").textContent =
+    "차트 라이브러리 로딩 실패: 인터넷 연결을 확인하세요.";
   throw new Error("Lightweight Charts library not loaded");
 }
 
 const commonOptions = {
   layout: {
-    background: {
-      color: "#FFFFFF"
-    },
+    background: { color: "#FFFFFF" },
     textColor: "#78968A",
     fontFamily: "Arial"
   },
 
   grid: {
-    vertLines: {
-      color: "#EDF4EF"
-    },
-    horzLines: {
-      color: "#EDF4EF"
-    }
+    vertLines: { color: "#EDF4EF" },
+    horzLines: { color: "#EDF4EF" }
   },
 
   rightPriceScale: {
     borderColor: "#E4F1EB"
   },
 
-  timeScale: {
-    borderColor: "#E4F1EB",
-    timeVisible: true,
-    secondsVisible: false
-  },
-
   localization: {
     priceFormatter: price =>
       Math.round(price).toLocaleString("ko-KR")
+  },
+
+  handleScroll: {
+    mouseWheel: true,
+    pressedMouseMove: true,
+    horzTouchDrag: true,
+    vertTouchDrag: false
+  },
+
+  handleScale: {
+    axisPressedMouseMove: true,
+    mouseWheel: true,
+    pinch: true
   }
 };
 
@@ -645,7 +619,6 @@ const volumeSeries = volumeChart.addHistogramSeries({
   priceFormat: {
     type: "volume"
   },
-
   priceLineVisible: false,
   lastValueVisible: false
 });
@@ -674,19 +647,19 @@ function calculateMA(data, period) {
 
 function updateVisibility() {
   ma5Series.applyOptions({
-    visible: document.getElementById("toggleMA5").checked
+    visible: $("toggleMA5").checked
   });
 
   ma20Series.applyOptions({
-    visible: document.getElementById("toggleMA20").checked
+    visible: $("toggleMA20").checked
   });
 
   ma60Series.applyOptions({
-    visible: document.getElementById("toggleMA60").checked
+    visible: $("toggleMA60").checked
   });
 
   volumeSeries.applyOptions({
-    visible: document.getElementById("toggleVolume").checked
+    visible: $("toggleVolume").checked
   });
 }
 
@@ -696,17 +669,13 @@ function updateVisibility() {
   "toggleMA60",
   "toggleVolume"
 ].forEach(id => {
-  document.getElementById(id).addEventListener(
-    "change",
-    updateVisibility
-  );
+  $(id).addEventListener("change", updateVisibility);
 });
 
-function renderChart() {
+function renderChart(fit = true) {
   if (!candles.length) return;
 
   candleSeries.setData(candles);
-
   ma5Series.setData(calculateMA(candles, 5));
   ma20Series.setData(calculateMA(candles, 20));
   ma60Series.setData(calculateMA(candles, 60));
@@ -715,7 +684,6 @@ function renderChart() {
     candles.map(candle => ({
       time: candle.time,
       value: candle.volume || 0,
-
       color: candle.close >= candle.open
         ? "rgba(50,185,149,0.75)"
         : "rgba(231,121,127,0.75)"
@@ -724,28 +692,58 @@ function renderChart() {
 
   updateVisibility();
 
-  priceChart.timeScale().fitContent();
-  volumeChart.timeScale().fitContent();
+  if (fit) {
+    priceChart.timeScale().fitContent();
+    volumeChart.timeScale().fitContent();
+  }
 }
 
 function getInterval() {
-  return currentUnit === "day"
-    ? 86400
-    : Number(currentUnit) * 60;
+  if (currentUnit === "day") return 86400;
+  if (currentUnit === "week") return 604800;
+  if (currentUnit === "month") return null;
+
+  return Number(currentUnit) * 60;
 }
 
 function getCandleTime(timestamp) {
   const interval = getInterval();
 
+  // 업비트 일봉, 주봉, 월봉은 한국 시간 기준으로 구분
   if (currentUnit === "day") {
-    return Math.floor((timestamp + 32400) / interval)
-      * interval - 32400;
+    return Math.floor((timestamp + 32400) / 86400)
+      * 86400 - 32400;
+  }
+
+  if (currentUnit === "week") {
+    const date = new Date((timestamp + 32400) * 1000);
+
+    const day = date.getUTCDay();
+    const daysFromMonday = (day + 6) % 7;
+
+    const monday = Date.UTC(
+      date.getUTCFullYear(),
+      date.getUTCMonth(),
+      date.getUTCDate() - daysFromMonday
+    );
+
+    return monday / 1000 - 32400;
+  }
+
+  if (currentUnit === "month") {
+    const date = new Date((timestamp + 32400) * 1000);
+
+    return Date.UTC(
+      date.getUTCFullYear(),
+      date.getUTCMonth(),
+      1
+    ) / 1000 - 32400;
   }
 
   return Math.floor(timestamp / interval) * interval;
 }
 
-function updateCurrentCandle(price, volume = 0) {
+function updateCurrentCandle(price, tradeVolume = 0) {
   if (!candles.length) return;
 
   const now = Math.floor(Date.now() / 1000);
@@ -757,7 +755,7 @@ function updateCurrentCandle(price, volume = 0) {
     last.high = Math.max(last.high, price);
     last.low = Math.min(last.low, price);
     last.close = price;
-    last.volume += volume;
+    last.volume += tradeVolume;
 
   } else if (time > last.time) {
     last = {
@@ -766,7 +764,7 @@ function updateCurrentCandle(price, volume = 0) {
       high: price,
       low: price,
       close: price,
-      volume
+      volume: tradeVolume
     };
 
     candles.push(last);
@@ -784,7 +782,6 @@ function updateCurrentCandle(price, volume = 0) {
   volumeSeries.update({
     time: last.time,
     value: last.volume,
-
     color: last.close >= last.open
       ? "rgba(50,185,149,0.75)"
       : "rgba(231,121,127,0.75)"
@@ -800,15 +797,22 @@ function updateCurrentCandle(price, volume = 0) {
 async function loadHistory() {
   const requestId = ++chartRequestId;
 
-  document.getElementById("chartStatus").textContent =
-    "캔들 및 거래량 데이터를 불러오는 중...";
+  $("chartStatus").textContent =
+    "차트 데이터를 불러오는 중...";
 
   try {
+    const endpoints = {
+      day: "days",
+      week: "weeks",
+      month: "months"
+    };
+
     let endpoint;
 
-    if (currentUnit === "day") {
+    if (endpoints[currentUnit]) {
       endpoint =
-        `${API_BASE}/candles/days?market=KRW-BTC&count=200`;
+        `${API_BASE}/candles/${endpoints[currentUnit]}` +
+        `?market=KRW-BTC&count=200`;
     } else {
       endpoint =
         `${API_BASE}/candles/minutes/${currentUnit}` +
@@ -828,7 +832,7 @@ async function loadHistory() {
     if (requestId !== chartRequestId) return;
 
     if (!Array.isArray(data) || data.length === 0) {
-      throw new Error("캔들 데이터가 없습니다.");
+      throw new Error("조회된 캔들 데이터가 없습니다.");
     }
 
     candles = data.reverse().map(item => ({
@@ -846,16 +850,16 @@ async function loadHistory() {
       renderChart();
     }
 
-    document.getElementById("chartStatus").textContent =
-      "캔들 " + candles.length +
-      "개 조회 완료 · 이동평균선 및 거래량 표시 중";
+    $("chartStatus").textContent =
+      candles.length + "개 캔들 조회 완료 · " +
+      currentUnit + " 차트";
 
   } catch (error) {
     if (requestId !== chartRequestId) return;
 
-    console.error(error);
+    console.error("차트 조회 오류:", error);
 
-    document.getElementById("chartStatus").textContent =
+    $("chartStatus").textContent =
       "차트 조회 실패: " + error.message;
   }
 }
@@ -863,25 +867,25 @@ async function loadHistory() {
 function updateMarket(data) {
   currentPrice = data.trade_price;
 
-  document.getElementById("price").textContent =
+  $("price").textContent =
     formatWon(data.trade_price) + "원";
 
-  document.getElementById("high").textContent =
+  $("high").textContent =
     formatWon(data.high_price) + "원";
 
-  document.getElementById("low").textContent =
+  $("low").textContent =
     formatWon(data.low_price) + "원";
 
-  document.getElementById("previous").textContent =
+  $("previous").textContent =
     formatWon(data.prev_closing_price) + "원";
 
-  document.getElementById("volume24").textContent =
+  $("volume24").textContent =
     formatWon(data.acc_trade_price_24h) + "원";
 
   const change = data.signed_change_price;
   const rate = data.signed_change_rate * 100;
 
-  const element = document.getElementById("change");
+  const element = $("change");
 
   element.className = "change";
 
@@ -905,7 +909,7 @@ function updateMarket(data) {
     rate.toFixed(2) +
     "%) · 전일 대비";
 
-  document.getElementById("updated").textContent =
+  $("updated").textContent =
     "마지막 업데이트: " +
     new Date().toLocaleTimeString("ko-KR");
 
@@ -924,10 +928,8 @@ function updateTrade(data) {
 }
 
 function setConnection(state, message) {
-  const element = document.getElementById("connection");
-
-  element.textContent = message;
-  element.className = "connection " + state;
+  $("connection").textContent = message;
+  $("connection").className = "connection " + state;
 }
 
 function connectUpbit() {
@@ -942,20 +944,10 @@ function connectUpbit() {
     reconnecting = false;
 
     socket.send(JSON.stringify([
-      {
-        ticket: "bitcoin-dashboard"
-      },
-      {
-        type: "ticker",
-        codes: ["KRW-BTC"]
-      },
-      {
-        type: "trade",
-        codes: ["KRW-BTC"]
-      },
-      {
-        format: "DEFAULT"
-      }
+      { ticket: "bitcoin-dashboard" },
+      { type: "ticker", codes: ["KRW-BTC"] },
+      { type: "trade", codes: ["KRW-BTC"] },
+      { format: "DEFAULT" }
     ]));
   };
 
@@ -997,8 +989,8 @@ function connectUpbit() {
 
     reconnecting = true;
 
-    document.getElementById("chartStatus").textContent =
-      "연결 끊김 · 재연결 시도 중";
+    $("chartStatus").textContent =
+      "연결 끊김 · 자동 재연결 시도 중";
 
     reconnectTimer = setTimeout(function() {
       reconnecting = false;
@@ -1009,7 +1001,6 @@ function connectUpbit() {
       );
 
       connectUpbit();
-
     }, reconnectDelay);
   };
 }
@@ -1018,7 +1009,6 @@ document.querySelectorAll(
   ".chart-toolbar button[data-unit]"
 ).forEach(button => {
   button.addEventListener("click", function() {
-
     document.querySelectorAll(
       ".chart-toolbar button[data-unit]"
     ).forEach(item => item.classList.remove("active"));
@@ -1031,11 +1021,10 @@ document.querySelectorAll(
   });
 });
 
-document.getElementById("resetChart")
-  .addEventListener("click", function() {
-    priceChart.timeScale().fitContent();
-    volumeChart.timeScale().fitContent();
-  });
+$("resetChart").addEventListener("click", function() {
+  priceChart.timeScale().fitContent();
+  volumeChart.timeScale().fitContent();
+});
 
 priceChart.subscribeCrosshairMove(function(param) {
   if (!param || !param.time) return;
@@ -1044,27 +1033,22 @@ priceChart.subscribeCrosshairMove(function(param) {
 
   if (!candle) return;
 
-  document.getElementById("openValue").textContent =
-    formatWon(candle.open);
-
-  document.getElementById("highValue").textContent =
-    formatWon(candle.high);
-
-  document.getElementById("lowValue").textContent =
-    formatWon(candle.low);
-
-  document.getElementById("closeValue").textContent =
-    formatWon(candle.close);
+  $("openValue").textContent = formatWon(candle.open);
+  $("highValue").textContent = formatWon(candle.high);
+  $("lowValue").textContent = formatWon(candle.low);
+  $("closeValue").textContent = formatWon(candle.close);
 });
 
-// 두 차트의 시간축을 함께 움직이도록 연결
+// 가격 차트와 거래량 차트의 시간축 동기화
 let syncing = false;
 
 priceChart.timeScale().subscribeVisibleLogicalRangeChange(range => {
   if (syncing || !range) return;
 
   syncing = true;
+
   volumeChart.timeScale().setVisibleLogicalRange(range);
+
   syncing = false;
 });
 
@@ -1072,10 +1056,13 @@ volumeChart.timeScale().subscribeVisibleLogicalRangeChange(range => {
   if (syncing || !range) return;
 
   syncing = true;
+
   priceChart.timeScale().setVisibleLogicalRange(range);
+
   syncing = false;
 });
 
+// 화면 크기에 맞춰 차트 크기 변경
 const resizeObserver = new ResizeObserver(() => {
   priceChart.applyOptions({
     width: priceElement.clientWidth,
