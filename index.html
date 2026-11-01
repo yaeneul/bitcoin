@@ -4,7 +4,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bitcoin Live Price</title>
+<title>BITCOIN TERMINAL</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
 * {
@@ -13,154 +15,255 @@
 
 body {
   margin: 0;
-  min-height: 100vh;
-  background: #10131c;
-  color: #ffffff;
+  background: #0b0e11;
+  color: #eaecef;
   font-family: Arial, sans-serif;
+}
+
+header {
+  height: 68px;
+  border-bottom: 1px solid #252a31;
   display: flex;
-  justify-content: center;
   align-items: center;
-  padding: 20px;
-}
-
-.container {
-  width: 100%;
-  max-width: 500px;
-  background: #1a1e2b;
-  border: 1px solid #303545;
-  border-radius: 22px;
-  padding: 30px;
-}
-
-.header {
-  display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 35px;
+  padding: 0 5%;
 }
 
-.logo-area {
+.brand {
   display: flex;
   align-items: center;
-  gap: 13px;
+  gap: 12px;
+  font-size: 19px;
+  font-weight: bold;
+  letter-spacing: 1px;
 }
 
 .logo {
-  width: 50px;
-  height: 50px;
+  width: 34px;
+  height: 34px;
   background: #f7931a;
+  color: white;
   border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 30px;
-  font-weight: bold;
-}
-
-h1 {
-  margin: 0 0 6px;
-  font-size: 21px;
-}
-
-.subtitle {
-  font-size: 12px;
-  color: #9ca3b5;
-}
-
-.connection {
-  font-size: 11px;
-  padding: 8px 11px;
-  border-radius: 20px;
-  background: #343a49;
-  color: #c3c8d4;
-}
-
-.connection.connected {
-  background: #173b30;
-  color: #62dda6;
-}
-
-.connection.disconnected {
-  background: #49262c;
-  color: #ff8585;
-}
-
-.label {
-  font-size: 14px;
-  color: #aab1c3;
-}
-
-.price {
-  font-size: clamp(30px, 8vw, 39px);
-  font-weight: bold;
-  margin: 14px 0;
-  overflow-wrap: anywhere;
-  transition: color 0.2s;
-}
-
-.change {
-  font-size: 15px;
-  margin-bottom: 30px;
-}
-
-.up {
-  color: #ff737d;
-}
-
-.down {
-  color: #6ea8ff;
-}
-
-.neutral {
-  color: #b0b6c5;
-}
-
-.divider {
-  height: 1px;
-  background: #303545;
-  margin-bottom: 23px;
-}
-
-.details {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  place-items: center;
+  font-size: 23px;
+}
+
+.header-right {
+  color: #848e9c;
+  font-size: 12px;
+}
+
+main {
+  max-width: 1250px;
+  margin: 35px auto;
+  padding: 0 25px;
+}
+
+.market-title {
+  display: flex;
+  align-items: center;
   gap: 12px;
   margin-bottom: 25px;
 }
 
-.detail {
-  background: #252b3b;
-  border-radius: 13px;
-  padding: 17px;
+.market-icon {
+  width: 43px;
+  height: 43px;
+  border-radius: 50%;
+  background: #f7931a;
+  display: grid;
+  place-items: center;
+  font-size: 27px;
 }
 
-.detail-label {
+.market-title h2 {
+  margin: 0 0 5px;
+  font-size: 20px;
+}
+
+.market-title p {
+  margin: 0;
+  color: #848e9c;
   font-size: 12px;
-  color: #9ca3b5;
-  margin-bottom: 11px;
 }
 
-.detail-value {
-  font-size: 16px;
+.connection {
+  margin-left: auto;
+  font-size: 11px;
+  color: #848e9c;
+  background: #202630;
+  padding: 8px 12px;
+  border-radius: 20px;
+}
+
+.connection.connected {
+  color: #0ecb81;
+  background: #12372d;
+}
+
+.connection.disconnected {
+  color: #f6465d;
+  background: #3a2027;
+}
+
+.price-section {
+  background: #151a21;
+  border: 1px solid #252a31;
+  border-radius: 12px;
+  padding: 27px;
+  margin-bottom: 18px;
+}
+
+.price-label {
+  font-size: 13px;
+  color: #848e9c;
+}
+
+.price {
+  font-size: clamp(32px, 5vw, 43px);
+  font-weight: bold;
+  margin: 13px 0;
+  overflow-wrap: anywhere;
+}
+
+.change {
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.up {
+  color: #0ecb81;
+}
+
+.down {
+  color: #f6465d;
+}
+
+.neutral {
+  color: #848e9c;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.stat {
+  background: #151a21;
+  border: 1px solid #252a31;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: #848e9c;
+  margin-bottom: 12px;
+}
+
+.stat-value {
+  font-size: 17px;
   font-weight: bold;
   overflow-wrap: anywhere;
 }
 
-.footer {
-  text-align: center;
-  color: #929bad;
-  font-size: 12px;
-  line-height: 1.8;
+.chart-container {
+  background: #151a21;
+  border: 1px solid #252a31;
+  border-radius: 12px;
+  padding: 23px;
 }
 
-@media (max-width: 380px) {
-  .container {
+.chart-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-bottom: 22px;
+}
+
+.chart-header h3 {
+  margin: 0;
+  font-size: 17px;
+}
+
+.chart-buttons {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+}
+
+.chart-buttons button {
+  background: #252a31;
+  color: #848e9c;
+  border: none;
+  border-radius: 5px;
+  padding: 9px 13px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.chart-buttons button.active {
+  background: #f7931a;
+  color: #111;
+  font-weight: bold;
+}
+
+.chart-box {
+  position: relative;
+  width: 100%;
+  height: 360px;
+}
+
+.chart-info {
+  display: flex;
+  justify-content: space-between;
+  color: #848e9c;
+  font-size: 11px;
+  margin-top: 15px;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+footer {
+  text-align: center;
+  color: #59616e;
+  font-size: 11px;
+  padding: 30px 10px;
+}
+
+@media(max-width: 750px) {
+  main {
+    margin-top: 22px;
+    padding: 0 14px;
+  }
+
+  .stats {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .stat {
+    padding: 15px;
+  }
+
+  .chart-box {
+    height: 280px;
+  }
+
+  .price-section {
     padding: 20px;
   }
 
-  .connection {
-    font-size: 10px;
-    padding: 7px;
+  .chart-container {
+    padding: 15px;
+  }
+
+  header {
+    padding: 0 18px;
   }
 }
 </style>
@@ -168,15 +271,23 @@ h1 {
 
 <body>
 
-<div class="container">
+<header>
+  <div class="brand">
+    <div class="logo">₿</div>
+    BITCOIN TERMINAL
+  </div>
 
-  <div class="header">
-    <div class="logo-area">
-      <div class="logo">₿</div>
-      <div>
-        <h1>Bitcoin Live</h1>
-        <div class="subtitle">UPBIT · KRW-BTC</div>
-      </div>
+  <div class="header-right">UPBIT MARKET DATA</div>
+</header>
+
+<main>
+
+  <div class="market-title">
+    <div class="market-icon">₿</div>
+
+    <div>
+      <h2>Bitcoin / KRW</h2>
+      <p>비트코인 · 대한민국 원화 마켓</p>
     </div>
 
     <div class="connection" id="connection">
@@ -184,65 +295,183 @@ h1 {
     </div>
   </div>
 
-  <div class="label">비트코인 현재가</div>
+  <section class="price-section">
+    <div class="price-label">현재 비트코인 가격 (KRW)</div>
 
-  <div class="price" id="price">
-    데이터 수신 대기 중
-  </div>
-
-  <div class="change neutral" id="change">
-    업비트 실시간 시세 연결 중
-  </div>
-
-  <div class="divider"></div>
-
-  <div class="details">
-
-    <div class="detail">
-      <div class="detail-label">오늘의 고가</div>
-      <div class="detail-value" id="high">-</div>
+    <div class="price" id="price">
+      데이터 수신 대기 중
     </div>
 
-    <div class="detail">
-      <div class="detail-label">오늘의 저가</div>
-      <div class="detail-value" id="low">-</div>
+    <div class="change neutral" id="change">
+      실시간 시세 연결 중
+    </div>
+  </section>
+
+  <section class="stats">
+
+    <div class="stat">
+      <div class="stat-label">24시간 고가</div>
+      <div class="stat-value" id="high">-</div>
     </div>
 
-    <div class="detail">
-      <div class="detail-label">전일 종가</div>
-      <div class="detail-value" id="previous">-</div>
+    <div class="stat">
+      <div class="stat-label">24시간 저가</div>
+      <div class="stat-value" id="low">-</div>
     </div>
 
-    <div class="detail">
-      <div class="detail-label">24시간 거래대금</div>
-      <div class="detail-value" id="volume">-</div>
+    <div class="stat">
+      <div class="stat-label">전일 종가</div>
+      <div class="stat-value" id="previous">-</div>
     </div>
 
-  </div>
+    <div class="stat">
+      <div class="stat-label">24시간 거래대금</div>
+      <div class="stat-value" id="volume">-</div>
+    </div>
 
-  <div class="footer">
-    <div id="status">업비트 WebSocket 연결 준비 중</div>
-    <div id="updated">마지막 업데이트: -</div>
-    <div>Data provided by Upbit</div>
-  </div>
+  </section>
 
-</div>
+  <section class="chart-container">
+
+    <div class="chart-header">
+      <h3>BTC/KRW 가격 차트</h3>
+
+      <div class="chart-buttons">
+        <button class="active" data-unit="1">1분</button>
+        <button data-unit="5">5분</button>
+        <button data-unit="15">15분</button>
+        <button data-unit="60">1시간</button>
+        <button data-unit="day">1일</button>
+      </div>
+    </div>
+
+    <div class="chart-box">
+      <canvas id="priceChart"></canvas>
+    </div>
+
+    <div class="chart-info">
+      <span id="chartStatus">차트 데이터 불러오는 중</span>
+      <span id="updated">마지막 업데이트: -</span>
+    </div>
+
+  </section>
+
+</main>
+
+<footer>
+  DATA PROVIDED BY UPBIT · PUBLIC MARKET DATA
+</footer>
 
 <script>
-const SOCKET_URL = "wss://api.upbit.com/websocket/v1";
+const WS_URL = "wss://api.upbit.com/websocket/v1";
+
+const API_BASE = "https://api.upbit.com/v1";
+
+const formatWon = value =>
+  Math.round(value).toLocaleString("ko-KR") + "원";
 
 let socket = null;
 let reconnectTimer = null;
 let reconnectDelay = 1000;
-let manuallyClosed = false;
+let currentUnit = "1";
+let currentPrice = null;
+let chart = null;
+let chartPoints = [];
+let latestCandleTime = null;
+let reconnecting = false;
 
-const numberFormat = new Intl.NumberFormat("ko-KR", {
-  maximumFractionDigits: 0
+const buttons = document.querySelectorAll(
+  ".chart-buttons button"
+);
+
+const canvas = document.getElementById("priceChart");
+
+const chartContext = canvas.getContext("2d");
+
+const gradient = chartContext.createLinearGradient(
+  0, 0, 0, 360
+);
+
+gradient.addColorStop(0, "rgba(14,203,129,0.25)");
+gradient.addColorStop(1, "rgba(14,203,129,0)");
+
+chart = new Chart(canvas, {
+  type: "line",
+
+  data: {
+    labels: [],
+    datasets: [{
+      label: "BTC/KRW",
+      data: [],
+      borderColor: "#0ecb81",
+      backgroundColor: gradient,
+      borderWidth: 2,
+      pointRadius: 0,
+      pointHoverRadius: 5,
+      pointHoverBackgroundColor: "#0ecb81",
+      fill: true,
+      tension: 0.2
+    }]
+  },
+
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    animation: false,
+    interaction: {
+      intersect: false,
+      mode: "index"
+    },
+
+    plugins: {
+      legend: {
+        display: false
+      },
+
+      tooltip: {
+        backgroundColor: "#252a31",
+        titleColor: "#848e9c",
+        bodyColor: "#ffffff",
+        callbacks: {
+          label: function(context) {
+            return " " + formatWon(context.parsed.y);
+          }
+        }
+      }
+    },
+
+    scales: {
+      x: {
+        grid: {
+          color: "#252a31"
+        },
+        ticks: {
+          color: "#848e9c",
+          maxTicksLimit: 7,
+          maxRotation: 0
+        },
+        border: {
+          display: false
+        }
+      },
+
+      y: {
+        position: "right",
+        grid: {
+          color: "#252a31"
+        },
+        ticks: {
+          color: "#848e9c",
+          callback: value =>
+            Number(value).toLocaleString("ko-KR")
+        },
+        border: {
+          display: false
+        }
+      }
+    }
+  }
 });
-
-function formatWon(value) {
-  return numberFormat.format(value) + "원";
-}
 
 function setConnection(state, message) {
   const element = document.getElementById("connection");
@@ -251,37 +480,11 @@ function setConnection(state, message) {
   element.className = "connection " + state;
 }
 
-function updatePrice(data) {
-  const price = data.trade_price;
-  const change = data.signed_change_price;
-  const rate = data.signed_change_rate * 100;
+function updateMarket(data) {
+  currentPrice = data.trade_price;
 
   document.getElementById("price").textContent =
-    formatWon(price);
-
-  const changeElement = document.getElementById("change");
-
-  changeElement.className = "change";
-
-  let symbol = "";
-
-  if (change > 0) {
-    changeElement.classList.add("up");
-    symbol = "▲ ";
-  } else if (change < 0) {
-    changeElement.classList.add("down");
-    symbol = "▼ ";
-  } else {
-    changeElement.classList.add("neutral");
-  }
-
-  changeElement.textContent =
-    symbol +
-    formatWon(Math.abs(change)) +
-    " (" +
-    (rate > 0 ? "+" : "") +
-    rate.toFixed(2) +
-    "%) · 전일 대비";
+    formatWon(data.trade_price);
 
   document.getElementById("high").textContent =
     formatWon(data.high_price);
@@ -295,36 +498,204 @@ function updatePrice(data) {
   document.getElementById("volume").textContent =
     formatWon(data.acc_trade_price_24h);
 
-  const now = new Date();
+  const change = data.signed_change_price;
+  const rate = data.signed_change_rate * 100;
+
+  const element = document.getElementById("change");
+
+  element.className = "change";
+
+  let symbol = "";
+
+  if (change > 0) {
+    element.classList.add("up");
+    symbol = "▲ ";
+  } else if (change < 0) {
+    element.classList.add("down");
+    symbol = "▼ ";
+  } else {
+    element.classList.add("neutral");
+  }
+
+  element.textContent =
+    symbol +
+    formatWon(Math.abs(change)) +
+    " (" +
+    (rate > 0 ? "+" : "") +
+    rate.toFixed(2) +
+    "%) · 전일 대비";
 
   document.getElementById("updated").textContent =
     "마지막 업데이트: " +
-    now.toLocaleTimeString("ko-KR");
+    new Date().toLocaleTimeString("ko-KR");
 
-  document.getElementById("status").textContent =
-    "실시간 시세 데이터 수신 중";
+  setConnection("connected", "● 실시간 연결");
 
-  setConnection("connected", "● 연결됨");
+  updateLiveChart(data);
 }
 
+function updateLiveChart(data) {
+  const now = new Date();
+  const price = data.trade_price;
+
+  const point = {
+    label: now.toLocaleTimeString("ko-KR", {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit"
+    }),
+    value: price,
+    timestamp: now.getTime()
+  };
+
+  const interval = currentUnit === "day"
+    ? 86400000
+    : Number(currentUnit) * 60000;
+
+  const last = chartPoints[chartPoints.length - 1];
+
+  if (
+    last &&
+    Math.floor(last.timestamp / interval) ===
+    Math.floor(point.timestamp / interval)
+  ) {
+    chartPoints[chartPoints.length - 1] = point;
+  } else {
+    chartPoints.push(point);
+  }
+
+  if (chartPoints.length > 150) {
+    chartPoints.shift();
+  }
+
+  renderChart();
+}
+
+function renderChart() {
+  const dataset = chart.data.datasets[0];
+
+  dataset.data = chartPoints.map(p => p.value);
+  chart.data.labels = chartPoints.map(p => p.label);
+
+  const first = chartPoints[0];
+  const last = chartPoints[chartPoints.length - 1];
+
+  if (first && last) {
+    const rising = last.value >= first.value;
+
+    dataset.borderColor = rising ? "#0ecb81" : "#f6465d";
+    dataset.pointHoverBackgroundColor =
+      rising ? "#0ecb81" : "#f6465d";
+
+    const fill = chartContext.createLinearGradient(
+      0, 0, 0, 360
+    );
+
+    fill.addColorStop(
+      0,
+      rising
+        ? "rgba(14,203,129,0.25)"
+        : "rgba(246,70,93,0.25)"
+    );
+
+    fill.addColorStop(1, "rgba(0,0,0,0)");
+
+    dataset.backgroundColor = fill;
+  }
+
+  chart.update("none");
+}
+
+async function loadHistory() {
+  const status = document.getElementById("chartStatus");
+
+  status.textContent = "과거 시세 데이터 불러오는 중...";
+
+  try {
+    let endpoint;
+
+    if (currentUnit === "day") {
+      endpoint = `${API_BASE}/candles/days?market=KRW-BTC&count=100`;
+    } else {
+      endpoint =
+        `${API_BASE}/candles/minutes/${currentUnit}` +
+        `?market=KRW-BTC&count=100`;
+    }
+
+    const response = await fetch(endpoint, {
+      cache: "no-store"
+    });
+
+    if (!response.ok) {
+      throw new Error("HTTP " + response.status);
+    }
+
+    const candles = await response.json();
+
+    if (!Array.isArray(candles) || candles.length === 0) {
+      throw new Error("차트 데이터가 없습니다.");
+    }
+
+    chartPoints = candles.reverse().map(candle => ({
+      label: new Date(
+        candle.timestamp
+      ).toLocaleTimeString("ko-KR", {
+        hour: "2-digit",
+        minute: "2-digit"
+      }),
+      value: candle.trade_price,
+      timestamp: candle.timestamp
+    }));
+
+    latestCandleTime =
+      chartPoints[chartPoints.length - 1].timestamp;
+
+    if (currentPrice !== null) {
+      const last = chartPoints[chartPoints.length - 1];
+
+      last.value = currentPrice;
+    }
+
+    renderChart();
+
+    status.textContent =
+      "과거 시세 " + candles.length +
+      "개 · 실시간 가격 반영";
+
+  } catch (error) {
+    console.error("차트 조회 오류:", error);
+
+    status.textContent =
+      "차트 조회 실패: " + error.message;
+  }
+}
+
+buttons.forEach(button => {
+  button.addEventListener("click", function() {
+    buttons.forEach(b => b.classList.remove("active"));
+
+    this.classList.add("active");
+
+    currentUnit = this.dataset.unit;
+
+    loadHistory();
+  });
+});
+
 function connectUpbit() {
-  if (manuallyClosed) return;
-
   clearTimeout(reconnectTimer);
-
-  document.getElementById("status").textContent =
-    "업비트 서버 연결 중...";
 
   setConnection("", "연결 중");
 
-  socket = new WebSocket(SOCKET_URL);
+  socket = new WebSocket(WS_URL);
 
   socket.onopen = function() {
     reconnectDelay = 1000;
+    reconnecting = false;
 
-    const request = [
+    socket.send(JSON.stringify([
       {
-        ticket: "bitcoin-live-monitor"
+        ticket: "bitcoin-terminal"
       },
       {
         type: "ticker",
@@ -333,12 +704,10 @@ function connectUpbit() {
       {
         format: "DEFAULT"
       }
-    ];
+    ]));
 
-    socket.send(JSON.stringify(request));
-
-    document.getElementById("status").textContent =
-      "구독 요청 완료 · 데이터 대기 중";
+    document.getElementById("chartStatus").textContent =
+      "실시간 시세 연결 완료";
   };
 
   socket.onmessage = async function(event) {
@@ -347,48 +716,44 @@ function connectUpbit() {
 
       if (event.data instanceof Blob) {
         message = await event.data.text();
-      } else if (event.data instanceof ArrayBuffer) {
-        message = new TextDecoder().decode(event.data);
       } else {
         message = event.data;
       }
 
       const data = JSON.parse(message);
 
-      if (data.error) {
-        throw new Error(data.error.message || "API 오류");
-      }
-
       if (data.type === "ticker" && data.code === "KRW-BTC") {
-        updatePrice(data);
+        updateMarket(data);
       }
 
     } catch (error) {
       console.error("데이터 처리 오류:", error);
-      document.getElementById("status").textContent =
-        "데이터 처리 오류: " + error.message;
     }
   };
 
   socket.onerror = function(error) {
     console.error("WebSocket 오류:", error);
-
-    document.getElementById("status").textContent =
-      "연결 오류 발생";
   };
 
   socket.onclose = function() {
-    if (manuallyClosed) return;
-
     setConnection("disconnected", "● 연결 끊김");
 
-    document.getElementById("status").textContent =
-      "연결이 끊어졌습니다. 재연결 시도 중...";
+    if (!reconnecting) {
+      reconnecting = true;
 
-    reconnectTimer = setTimeout(function() {
-      reconnectDelay = Math.min(reconnectDelay * 2, 30000);
-      connectUpbit();
-    }, reconnectDelay);
+      document.getElementById("chartStatus").textContent =
+        "연결 끊김 · 자동 재연결 시도 중";
+
+      reconnectTimer = setTimeout(() => {
+        reconnecting = false;
+        reconnectDelay = Math.min(
+          reconnectDelay * 2,
+          30000
+        );
+
+        connectUpbit();
+      }, reconnectDelay);
+    }
   };
 }
 
@@ -400,7 +765,6 @@ window.addEventListener("online", function() {
 });
 
 window.addEventListener("beforeunload", function() {
-  manuallyClosed = true;
   clearTimeout(reconnectTimer);
 
   if (socket) {
@@ -408,6 +772,7 @@ window.addEventListener("beforeunload", function() {
   }
 });
 
+loadHistory();
 connectUpbit();
 </script>
 
