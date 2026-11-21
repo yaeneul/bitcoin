@@ -9,9 +9,7 @@
 <script src="https://cdn.jsdelivr.net/npm/lightweight-charts@4.2.2/dist/lightweight-charts.standalone.production.js"></script>
 
 <style>
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 body {
   margin: 0;
@@ -60,9 +58,7 @@ main {
   padding: 0 20px;
 }
 
-.welcome {
-  margin-bottom: 25px;
-}
+.welcome { margin-bottom: 25px; }
 
 .welcome h2 {
   margin: 0 0 8px;
@@ -147,17 +143,9 @@ main {
   font-weight: bold;
 }
 
-.up {
-  color: #168D6A;
-}
-
-.down {
-  color: #E7797F;
-}
-
-.neutral {
-  color: #91A69D;
-}
+.up { color: #168D6A; }
+.down { color: #E7797F; }
+.neutral { color: #91A69D; }
 
 .stats {
   display: grid;
@@ -212,11 +200,12 @@ main {
   font-size: 11px;
 }
 
+/* 차트 기간 선택 버튼 */
 .chart-toolbar {
   display: flex;
   flex-wrap: wrap;
-  gap: 7px;
-  padding-bottom: 15px;
+  gap: 8px;
+  padding: 12px 0 17px;
   border-bottom: 1px solid #EDF4EF;
 }
 
@@ -224,20 +213,28 @@ main {
   border: 1px solid #E4F1EB;
   background: #F5FAF7;
   color: #66877A;
-  border-radius: 7px;
-  padding: 9px 12px;
+  border-radius: 8px;
+  padding: 10px 15px;
   cursor: pointer;
-  font-size: 12px;
-}
-
-.chart-toolbar button.active {
-  background: #BCEBDD;
-  color: #176C56;
-  font-weight: bold;
+  font-size: 13px;
+  transition: 0.2s;
 }
 
 .chart-toolbar button:hover {
   background: #DDF5EA;
+}
+
+.chart-toolbar button.active {
+  background: #BCEBDD;
+  border-color: #8ED9BD;
+  color: #176C56;
+  font-weight: bold;
+}
+
+.toolbar-divider {
+  width: 1px;
+  background: #E4F1EB;
+  margin: 3px 4px;
 }
 
 .candle-details {
@@ -249,9 +246,7 @@ main {
   color: #78968A;
 }
 
-.candle-details b {
-  color: #285D4D;
-}
+.candle-details b { color: #285D4D; }
 
 .indicator-bar {
   display: flex;
@@ -278,9 +273,7 @@ main {
   cursor: pointer;
 }
 
-.indicator input {
-  accent-color: #32B995;
-}
+.indicator input { accent-color: #32B995; }
 
 .ma5 { color: #E5A64C; }
 .ma20 { color: #9B83D5; }
@@ -327,32 +320,17 @@ footer {
     padding: 0 13px;
   }
 
-  .stats {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .stat {
-    padding: 16px;
-  }
-
-  .chart-container {
-    padding: 15px;
-  }
-
-  .price-chart {
-    height: 310px;
-  }
-
-  .volume-chart {
-    height: 110px;
-  }
-
-  header {
-    padding: 0 17px;
-  }
-
-  .header-right {
-    font-size: 10px;
+  .stats { grid-template-columns: 1fr 1fr; }
+  .stat { padding: 16px; }
+  .chart-container { padding: 15px; }
+  .price-chart { height: 310px; }
+  .volume-chart { height: 110px; }
+  header { padding: 0 17px; }
+  .header-right { font-size: 10px; }
+  .chart-toolbar { gap: 6px; }
+  .chart-toolbar button {
+    padding: 9px 11px;
+    font-size: 12px;
   }
 }
 </style>
@@ -420,17 +398,24 @@ footer {
       </div>
     </div>
 
-  <div class="chart-toolbar">
-    <button data-unit="1">1분</button>
-    <button data-unit="5">5분</button>
-    <button data-unit="15">15분</button>
-    <button data-unit="60">1시간</button>
-    <button data-unit="240">4시간</button>
-    <button data-unit="day" class="active">일</button>
-    <button data-unit="week">주</button>
-    <button data-unit="month">월</button>
-    <button id="resetChart">초기화</button>
-  </div>
+    <!-- 차트 기간 선택 -->
+    <div class="chart-toolbar">
+
+      <button data-unit="1">1분</button>
+      <button data-unit="5">5분</button>
+      <button data-unit="15">15분</button>
+      <button data-unit="60">1시간</button>
+      <button data-unit="240">4시간</button>
+
+      <span class="toolbar-divider"></span>
+
+      <button data-unit="day" class="active">일</button>
+      <button data-unit="week">주</button>
+      <button data-unit="month">월</button>
+
+      <button id="resetChart">초기화</button>
+
+    </div>
 
     <div class="candle-details">
       <span>시가: <b id="openValue">-</b></span>
@@ -471,7 +456,6 @@ footer {
     </div>
 
   </section>
-
 </main>
 
 <footer>
@@ -486,11 +470,6 @@ const $ = id => document.getElementById(id);
 
 const formatWon = value =>
   Math.round(value).toLocaleString("ko-KR");
-
-const formatVolume = value =>
-  Number(value).toLocaleString("ko-KR", {
-    maximumFractionDigits: 4
-  });
 
 let socket = null;
 let reconnectTimer = null;
@@ -517,28 +496,23 @@ const commonOptions = {
     textColor: "#78968A",
     fontFamily: "Arial"
   },
-
   grid: {
     vertLines: { color: "#EDF4EF" },
     horzLines: { color: "#EDF4EF" }
   },
-
   rightPriceScale: {
     borderColor: "#E4F1EB"
   },
-
   localization: {
     priceFormatter: price =>
       Math.round(price).toLocaleString("ko-KR")
   },
-
   handleScroll: {
     mouseWheel: true,
     pressedMouseMove: true,
     horzTouchDrag: true,
     vertTouchDrag: false
   },
-
   handleScale: {
     axisPressedMouseMove: true,
     mouseWheel: true,
@@ -550,15 +524,10 @@ const priceChart = LightweightCharts.createChart(priceElement, {
   ...commonOptions,
   width: priceElement.clientWidth,
   height: priceElement.clientHeight,
-
   rightPriceScale: {
     borderColor: "#E4F1EB",
-    scaleMargins: {
-      top: 0.08,
-      bottom: 0.08
-    }
+    scaleMargins: { top: 0.08, bottom: 0.08 }
   },
-
   timeScale: {
     visible: false,
     borderColor: "#E4F1EB"
@@ -569,15 +538,10 @@ const volumeChart = LightweightCharts.createChart(volumeElement, {
   ...commonOptions,
   width: volumeElement.clientWidth,
   height: volumeElement.clientHeight,
-
   rightPriceScale: {
     borderColor: "#E4F1EB",
-    scaleMargins: {
-      top: 0.05,
-      bottom: 0.05
-    }
+    scaleMargins: { top: 0.05, bottom: 0.05 }
   },
-
   timeScale: {
     borderColor: "#E4F1EB",
     timeVisible: true,
@@ -616,9 +580,7 @@ const ma60Series = priceChart.addLineSeries({
 });
 
 const volumeSeries = volumeChart.addHistogramSeries({
-  priceFormat: {
-    type: "volume"
-  },
+  priceFormat: { type: "volume" },
   priceLineVisible: false,
   lastValueVisible: false
 });
@@ -646,21 +608,10 @@ function calculateMA(data, period) {
 }
 
 function updateVisibility() {
-  ma5Series.applyOptions({
-    visible: $("toggleMA5").checked
-  });
-
-  ma20Series.applyOptions({
-    visible: $("toggleMA20").checked
-  });
-
-  ma60Series.applyOptions({
-    visible: $("toggleMA60").checked
-  });
-
-  volumeSeries.applyOptions({
-    visible: $("toggleVolume").checked
-  });
+  ma5Series.applyOptions({ visible: $("toggleMA5").checked });
+  ma20Series.applyOptions({ visible: $("toggleMA20").checked });
+  ma60Series.applyOptions({ visible: $("toggleMA60").checked });
+  volumeSeries.applyOptions({ visible: $("toggleVolume").checked });
 }
 
 [
@@ -680,15 +631,13 @@ function renderChart(fit = true) {
   ma20Series.setData(calculateMA(candles, 20));
   ma60Series.setData(calculateMA(candles, 60));
 
-  volumeSeries.setData(
-    candles.map(candle => ({
-      time: candle.time,
-      value: candle.volume || 0,
-      color: candle.close >= candle.open
-        ? "rgba(50,185,149,0.75)"
-        : "rgba(231,121,127,0.75)"
-    }))
-  );
+  volumeSeries.setData(candles.map(candle => ({
+    time: candle.time,
+    value: candle.volume || 0,
+    color: candle.close >= candle.open
+      ? "rgba(50,185,149,0.75)"
+      : "rgba(231,121,127,0.75)"
+  })));
 
   updateVisibility();
 
@@ -709,7 +658,6 @@ function getInterval() {
 function getCandleTime(timestamp) {
   const interval = getInterval();
 
-  // 업비트 일봉, 주봉, 월봉은 한국 시간 기준으로 구분
   if (currentUnit === "day") {
     return Math.floor((timestamp + 32400) / 86400)
       * 86400 - 32400;
@@ -717,7 +665,6 @@ function getCandleTime(timestamp) {
 
   if (currentUnit === "week") {
     const date = new Date((timestamp + 32400) * 1000);
-
     const day = date.getUTCDay();
     const daysFromMonday = (day + 6) % 7;
 
@@ -756,7 +703,6 @@ function updateCurrentCandle(price, tradeVolume = 0) {
     last.low = Math.min(last.low, price);
     last.close = price;
     last.volume += tradeVolume;
-
   } else if (time > last.time) {
     last = {
       time,
@@ -769,10 +715,7 @@ function updateCurrentCandle(price, tradeVolume = 0) {
 
     candles.push(last);
 
-    if (candles.length > 200) {
-      candles.shift();
-    }
-
+    if (candles.length > 200) candles.shift();
   } else {
     return;
   }
@@ -797,8 +740,7 @@ function updateCurrentCandle(price, tradeVolume = 0) {
 async function loadHistory() {
   const requestId = ++chartRequestId;
 
-  $("chartStatus").textContent =
-    "차트 데이터를 불러오는 중...";
+  $("chartStatus").textContent = "차트 데이터를 불러오는 중...";
 
   try {
     const endpoints = {
@@ -851,40 +793,27 @@ async function loadHistory() {
     }
 
     $("chartStatus").textContent =
-      candles.length + "개 캔들 조회 완료 · " +
-      currentUnit + " 차트";
+      candles.length + "개 캔들 조회 완료 · " + currentUnit + " 차트";
 
   } catch (error) {
     if (requestId !== chartRequestId) return;
 
     console.error("차트 조회 오류:", error);
-
-    $("chartStatus").textContent =
-      "차트 조회 실패: " + error.message;
+    $("chartStatus").textContent = "차트 조회 실패: " + error.message;
   }
 }
 
 function updateMarket(data) {
   currentPrice = data.trade_price;
 
-  $("price").textContent =
-    formatWon(data.trade_price) + "원";
-
-  $("high").textContent =
-    formatWon(data.high_price) + "원";
-
-  $("low").textContent =
-    formatWon(data.low_price) + "원";
-
-  $("previous").textContent =
-    formatWon(data.prev_closing_price) + "원";
-
-  $("volume24").textContent =
-    formatWon(data.acc_trade_price_24h) + "원";
+  $("price").textContent = formatWon(data.trade_price) + "원";
+  $("high").textContent = formatWon(data.high_price) + "원";
+  $("low").textContent = formatWon(data.low_price) + "원";
+  $("previous").textContent = formatWon(data.prev_closing_price) + "원";
+  $("volume24").textContent = formatWon(data.acc_trade_price_24h) + "원";
 
   const change = data.signed_change_price;
   const rate = data.signed_change_rate * 100;
-
   const element = $("change");
 
   element.className = "change";
@@ -902,16 +831,12 @@ function updateMarket(data) {
   }
 
   element.textContent =
-    symbol +
-    formatWon(Math.abs(change)) +
-    "원 (" +
-    (rate > 0 ? "+" : "") +
-    rate.toFixed(2) +
+    symbol + formatWon(Math.abs(change)) + "원 (" +
+    (rate > 0 ? "+" : "") + rate.toFixed(2) +
     "%) · 전일 대비";
 
   $("updated").textContent =
-    "마지막 업데이트: " +
-    new Date().toLocaleTimeString("ko-KR");
+    "마지막 업데이트: " + new Date().toLocaleTimeString("ko-KR");
 
   setConnection("connected", "● 실시간 연결");
 
@@ -921,10 +846,7 @@ function updateMarket(data) {
 function updateTrade(data) {
   if (data.type !== "trade") return;
 
-  updateCurrentCandle(
-    data.trade_price,
-    data.trade_volume
-  );
+  updateCurrentCandle(data.trade_price, data.trade_volume);
 }
 
 function setConnection(state, message) {
@@ -953,25 +875,16 @@ function connectUpbit() {
 
   socket.onmessage = async function(event) {
     try {
-      let message;
-
-      if (event.data instanceof Blob) {
-        message = await event.data.text();
-      } else {
-        message = event.data;
-      }
+      const message = event.data instanceof Blob
+        ? await event.data.text()
+        : event.data;
 
       const data = JSON.parse(message);
 
       if (data.code !== "KRW-BTC") return;
 
-      if (data.type === "ticker") {
-        updateMarket(data);
-      }
-
-      if (data.type === "trade") {
-        updateTrade(data);
-      }
+      if (data.type === "ticker") updateMarket(data);
+      if (data.type === "trade") updateTrade(data);
 
     } catch (error) {
       console.error("데이터 처리 오류:", error);
@@ -994,38 +907,47 @@ function connectUpbit() {
 
     reconnectTimer = setTimeout(function() {
       reconnecting = false;
-
-      reconnectDelay = Math.min(
-        reconnectDelay * 2,
-        30000
-      );
-
+      reconnectDelay = Math.min(reconnectDelay * 2, 30000);
       connectUpbit();
     }, reconnectDelay);
   };
 }
 
-document.querySelectorAll(
-  ".chart-toolbar button[data-unit]"
-).forEach(button => {
+/* 기간 버튼 클릭 이벤트 */
+document.querySelectorAll(".chart-toolbar button[data-unit]")
+.forEach(button => {
   button.addEventListener("click", function() {
+
+    // 모든 버튼에서 active 제거
     document.querySelectorAll(
       ".chart-toolbar button[data-unit]"
     ).forEach(item => item.classList.remove("active"));
 
+    // 선택한 버튼 활성화
     this.classList.add("active");
 
+    // 차트 기간 변경
     currentUnit = this.dataset.unit;
+
+    // 선택한 기간의 새 데이터 불러오기
+    candles = [];
+    candleSeries.setData([]);
+    ma5Series.setData([]);
+    ma20Series.setData([]);
+    ma60Series.setData([]);
+    volumeSeries.setData([]);
 
     loadHistory();
   });
 });
 
+/* 차트 초기화 */
 $("resetChart").addEventListener("click", function() {
   priceChart.timeScale().fitContent();
   volumeChart.timeScale().fitContent();
 });
 
+/* 캔들 정보 표시 */
 priceChart.subscribeCrosshairMove(function(param) {
   if (!param || !param.time) return;
 
@@ -1039,16 +961,14 @@ priceChart.subscribeCrosshairMove(function(param) {
   $("closeValue").textContent = formatWon(candle.close);
 });
 
-// 가격 차트와 거래량 차트의 시간축 동기화
+/* 가격 차트와 거래량 차트 시간축 동기화 */
 let syncing = false;
 
 priceChart.timeScale().subscribeVisibleLogicalRangeChange(range => {
   if (syncing || !range) return;
 
   syncing = true;
-
   volumeChart.timeScale().setVisibleLogicalRange(range);
-
   syncing = false;
 });
 
@@ -1056,13 +976,11 @@ volumeChart.timeScale().subscribeVisibleLogicalRangeChange(range => {
   if (syncing || !range) return;
 
   syncing = true;
-
   priceChart.timeScale().setVisibleLogicalRange(range);
-
   syncing = false;
 });
 
-// 화면 크기에 맞춰 차트 크기 변경
+/* 화면 크기에 맞춰 차트 크기 변경 */
 const resizeObserver = new ResizeObserver(() => {
   priceChart.applyOptions({
     width: priceElement.clientWidth,
@@ -1088,13 +1006,12 @@ window.addEventListener("online", function() {
 
 window.addEventListener("beforeunload", function() {
   clearTimeout(reconnectTimer);
-
   if (socket) socket.close();
 });
 
 loadHistory();
 connectUpbit();
-</script>
 
+</script>
 </body>
 </html>
